@@ -21,7 +21,6 @@ public class main : MonoBehaviour
     private bool wasWaving = false;
     private bool falling = false;
     private bool waveStarted = false;
-    private bool ascentStarted = false;
     void Start()
     {
         SkeletalTrackingProvider m_skeletalTrackingProvider = new SkeletalTrackingProvider();
@@ -30,13 +29,13 @@ public class main : MonoBehaviour
         const int TRACKER_ID = 0;
         m_skeletalTrackingProvider.StartClientThread(TRACKER_ID);
         m_backgroundDataProvider = m_skeletalTrackingProvider;
-        //m_dolphin.GetComponent<Collider>().attachedRigidbody.useGravity = true;
-        startRotation = m_dolphin.transform.rotation;
-
-        finalPosition = new Vector3(startPosition.x, 3000, startPosition.z);
+        initialPosition = m_dolphin.transform.position;
+        startPosition = initialPosition;
+        finalPosition = new Vector3(0, 3000, 0);
         endPosition = finalPosition;
-        ascEndRotation = new Quaternion(Mathf.PI/3,0,0,1);
-        descEndRotation = new Quaternion(-Mathf.PI / 3, 0, 0, 1);
+        startRotation = m_dolphin.transform.rotation;
+        ascEndRotation = new Quaternion(0, 0, Mathf.PI / 4, 1);
+        descEndRotation = new Quaternion(0, 0, -Mathf.PI / 4, 1);
     }
 
     void Update()
@@ -62,7 +61,7 @@ public class main : MonoBehaviour
             m_dolphin.swimAround();
             initialPosition = m_dolphin.transform.position;
             startPosition = initialPosition;
-
+            startRotation = m_dolphin.transform.rotation;
         }
         else
         {
@@ -87,52 +86,37 @@ public class main : MonoBehaviour
 
             if (wasWaving && wavingTimer < 5)
             {
-                //if (!m_dolphin.getAscentStopped())
-                //{
-                //    m_dolphin.startAscent();
-                //}
-                //else
-                //{
-                    t += Time.deltaTime * speed;
-                    Quaternion interpolatedRotation = Quaternion.Lerp(startRotation, ascEndRotation, t*2.0f);
-                    m_dolphin.setRotation(interpolatedRotation);
-                    Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
-                    m_dolphin.setPosition(interpolatedPosition);
-                    //m_dolphin.transform.position = interpolatedPosition;
-                    m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_dolphin.transform.position.y, m_camera.transform.position.z);
-                    //speed += 0.001f;
-                    wavingTimer--;
-                //}
+                t += Time.deltaTime * speed;
+                Quaternion interpolatedRotation = Quaternion.Lerp(startRotation, ascEndRotation, t*100.0f);
+                m_dolphin.setRotation(interpolatedRotation);
+                Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
+                m_dolphin.setPosition(interpolatedPosition);
+                m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_dolphin.transform.position.y, m_camera.transform.position.z);
+                wavingTimer--;
+                
             }
             else if (falling)
             {
-                //if (!m_dolphin.getDescentStopped())
-                //{
-                //    m_dolphin.startDescent();
-                //}
-                //else
-                //{
-                    t += Time.deltaTime * speed;
-                    Quaternion interpolatedRotation;
-                    if (m_dolphin.transform.position.y <= (m_water.transform.position.y + 300))
-                    {
-                        level_out_t += Time.deltaTime * 1.1f;
+               
+                t += Time.deltaTime * speed;
+                Quaternion interpolatedRotation;
+                if (m_dolphin.transform.position.y <= (m_water.transform.position.y + 20))
+                {
+                    level_out_t += Time.deltaTime * 1.1f;
 
-                        interpolatedRotation = Quaternion.Lerp(descEndRotation, new Quaternion(0, 0, 0, 1), level_out_t);
-                        m_dolphin.setRotation(interpolatedRotation);
-                    }
+                    interpolatedRotation = Quaternion.Lerp(descEndRotation, new Quaternion(descEndRotation.x, descEndRotation.y, 0, 1), level_out_t);
+                    m_dolphin.setRotation(interpolatedRotation);
+                }
 
-                    else
-                    {
-                        interpolatedRotation = Quaternion.Lerp(startRotation, descEndRotation, t);
-                        m_dolphin.setRotation(interpolatedRotation);
-                    }
-                    Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
-                    m_dolphin.setPosition(interpolatedPosition);
-                //m_dolphin.transform.position = interpolatedPosition;
+                else
+                {
+                    interpolatedRotation = Quaternion.Lerp(startRotation, descEndRotation, t);
+                    m_dolphin.setRotation(interpolatedRotation);
+                }
+                Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
+                m_dolphin.setPosition(interpolatedPosition);
                 m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_dolphin.transform.position.y, m_camera.transform.position.z);
                 speed += 0.001f;
-                //}
             }
             if (wavingTimer < 0)
             {

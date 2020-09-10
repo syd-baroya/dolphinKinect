@@ -512,22 +512,22 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.3384503
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9409843
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
@@ -542,7 +542,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 39.565002
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 035a8130f4329504aaa80f75dc72628d,
         type: 3}
@@ -1357,7 +1357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_tracker: {fileID: 210279052}
-  m_dolphin: {fileID: 0}
+  m_dolphin: {fileID: 1888532546}
   m_camera: {fileID: 1820341850}
   m_water: {fileID: 1707633481163165265}
 --- !u!114 &522368196
@@ -4132,7 +4132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400146, guid: 476fed486d1c7f344be3e23fac8690ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 300.2
+      value: 286.34
       objectReference: {fileID: 0}
     - target: {fileID: 400146, guid: 476fed486d1c7f344be3e23fac8690ee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4140,7 +4140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400146, guid: 476fed486d1c7f344be3e23fac8690ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 269.3
+      value: 256.2
       objectReference: {fileID: 0}
     - target: {fileID: 400146, guid: 476fed486d1c7f344be3e23fac8690ee, type: 3}
       propertyPath: m_LocalRotation.x
@@ -4206,12 +4206,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ea3912e1b6d91499975bf3d6e26563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 30
-  speed: 10
-  speed_up_down: 1
-  speed_tilt: 1
-  maxTilt: 15
-  maxUpAndDown: 3
+  radius: 20
+  speed: 30
+  speed_up_down: 0.3
+  speed_tilt: 0.3
+  maxTilt: 30
+  maxUpAndDown: 6
 --- !u!1 &1941439564
 GameObject:
   m_ObjectHideFlags: 0
