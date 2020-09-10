@@ -1,0 +1,8 @@
+Tropical Vegetation (ver 1.1)
+
+Versions: Unity 2018 or higher, included 2020.
+
+The pack consists of 19 trees and 5 grasses, all objects have LOD and wind. (The wind on the HRDP works only with Unity 2019)
+You can see the wind setting in the special scenes of each render. То standart render wind named as Prefab_Wind
+
+HDRP version located folder and put on top of the main version, wind named as WindzoneHDRP. Diffusion profile you can fix on shader settings.
