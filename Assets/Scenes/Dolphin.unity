@@ -4207,11 +4207,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 20
-  speed: 30
+  speed: 20
   speed_up_down: 0.3
   speed_tilt: 0.3
-  maxTilt: 30
-  maxUpAndDown: 6
+  maxTilt: 7.5
+  maxUpAndDown: 1
 --- !u!1 &1941439564
 GameObject:
   m_ObjectHideFlags: 0
