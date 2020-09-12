@@ -21,6 +21,7 @@ public class main : MonoBehaviour
     private bool wasWaving = false;
     private bool falling = false;
     private bool waveStarted = false;
+    //RenderingPath userRenderPath;
     void Start()
     {
         SkeletalTrackingProvider m_skeletalTrackingProvider = new SkeletalTrackingProvider();
@@ -36,6 +37,9 @@ public class main : MonoBehaviour
         startRotation = m_dolphin.transform.rotation;
         ascEndRotation = new Quaternion(0, 0, Mathf.PI / 4, 1);
         descEndRotation = new Quaternion(0, 0, -Mathf.PI / 4, 1);
+        //userRenderPath = m_camera.GetComponentInChildren<Camera>().renderingPath;
+        m_camera.GetComponentInChildren<Camera>().renderingPath = RenderingPath.Forward;
+
     }
 
     void Update()
@@ -86,12 +90,17 @@ public class main : MonoBehaviour
 
             if (wasWaving && wavingTimer < 5)
             {
+                if (m_dolphin.transform.position.y >= (m_water.transform.position.y - 5))
+                {
+                    m_camera.GetComponentInChildren<Camera>().renderingPath = RenderingPath.DeferredShading;
+                }
                 t += Time.deltaTime * speed;
                 Quaternion interpolatedRotation = Quaternion.Lerp(startRotation, ascEndRotation, t*100.0f);
                 m_dolphin.setRotation(interpolatedRotation);
                 Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
+                float camDeltaY = interpolatedPosition.y - m_dolphin.transform.position.y;
                 m_dolphin.setPosition(interpolatedPosition);
-                m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_dolphin.transform.position.y, m_camera.transform.position.z);
+                m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_camera.transform.position.y + camDeltaY, m_camera.transform.position.z);
                 wavingTimer--;
                 
             }
@@ -102,6 +111,7 @@ public class main : MonoBehaviour
                 Quaternion interpolatedRotation;
                 if (m_dolphin.transform.position.y <= (m_water.transform.position.y + 20))
                 {
+                    m_camera.GetComponentInChildren<Camera>().renderingPath = RenderingPath.Forward;
                     level_out_t += Time.deltaTime * 1.1f;
 
                     interpolatedRotation = Quaternion.Lerp(descEndRotation, new Quaternion(descEndRotation.x, descEndRotation.y, 0, 1), level_out_t);
@@ -114,8 +124,9 @@ public class main : MonoBehaviour
                     m_dolphin.setRotation(interpolatedRotation);
                 }
                 Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
+                float camDeltaY = m_dolphin.transform.position.y - interpolatedPosition.y;
                 m_dolphin.setPosition(interpolatedPosition);
-                m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_dolphin.transform.position.y, m_camera.transform.position.z);
+                m_camera.transform.position = new Vector3(m_camera.transform.position.x, m_camera.transform.position.y - camDeltaY, m_camera.transform.position.z);
                 speed += 0.001f;
             }
             if (wavingTimer < 0)
