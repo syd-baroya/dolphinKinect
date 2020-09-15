@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class DolphinMover : MonoBehaviour
 {
-    public float radius = 20;
-    public float speed = 20;
+    public float radius = 30;
+    public float speed = 25;
     public float speed_up_down = 0.3f;
     public float speed_tilt = 0.3f;
-    public float maxTilt = 30;
-    public float maxUpAndDown = 6;
+    public float maxTilt = 7.5f;
+    public float maxUpAndDown = 1.0f;
 
-    private float animClipLength;
     private Animator myAnimator;
-    
+    private Vector3 middle;
+    private bool stopMoving = false;
+    private Vector3 start;
     private void Awake()
     {
         myAnimator = GetComponent<Animator>();
-        var m_CurrentClipInfo = myAnimator.GetCurrentAnimatorClipInfo(0);
-        animClipLength = m_CurrentClipInfo[0].clip.length;
     }
    
-    Vector3 middle;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +33,6 @@ public class DolphinMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
 
     }
 
@@ -59,7 +56,27 @@ public class DolphinMover : MonoBehaviour
 
         transform.Rotate(0, 0, tilt);
         transform.position = new Vector3(transform.position.x, middle.y + Mathf.Cos(tiltAngle * speed_up_down) * maxUpAndDown, transform.position.z);
+        start = transform.position;
 
+    }
+
+    public bool getStopMoving()
+    {
+        return stopMoving;
+    }
+
+    public void StartingWave()
+    {
+        if (!stopMoving)
+        {
+            float max_r = Vector3.Distance(start, middle);
+            float t = Mathf.InverseLerp(0.0f, max_r, Vector3.Distance(transform.position, middle));
+
+            transform.position = Vector3.Lerp(start, middle, t);
+            Debug.Log(t);
+            if (t >= 1.0f)
+                stopMoving = true;
+        }
     }
 
 }
