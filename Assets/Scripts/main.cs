@@ -10,11 +10,12 @@ public class main : MonoBehaviour
     public CameraBehavior m_camera;
     public GameObject m_water;
     public WaterLightBehavior m_waterlight;
+    public SunLightBehavior m_sunlight;
     public GameObject m_terrain;
     private BackgroundDataProvider m_backgroundDataProvider;
     public BackgroundData m_lastFrameData = new BackgroundData();
     private bool waving = false;
-    private float speed = 0.005f;
+    private float speed = 0.0025f;
     private float t = 0.0f;
     private float level_out_t = 0.0f;
     private Vector3 initialPosition, startPosition, endPosition, finalPosition;
@@ -23,7 +24,10 @@ public class main : MonoBehaviour
     private bool wasWaving = false;
     private bool falling = false;
     private bool waveStarted = false;
-    private float islandHeight = 0;
+    private float islandDimHeight = 0;
+    private float islandSpeedUpHeight = 0;
+    private float waterHeight = 0;
+
     //RenderingPath userRenderPath;
     void Start()
     {
@@ -35,14 +39,16 @@ public class main : MonoBehaviour
         m_backgroundDataProvider = m_skeletalTrackingProvider;
         initialPosition = m_dolphin.transform.position;
         startPosition = initialPosition;
-        finalPosition = new Vector3(0, 3000, 0);
+        finalPosition = new Vector3(m_dolphin.transform.position.x, 3000, m_dolphin.transform.position.z);
         endPosition = finalPosition;
         startRotation = m_dolphin.transform.rotation;
         ascEndRotation = new Quaternion(0, 0, Mathf.PI / 4, 1);
         descEndRotation = new Quaternion(0, 0, -Mathf.PI / 4, 1);
         //userRenderPath = m_camera.GetComponentInChildren<Camera>().renderingPath;
         m_camera.setRenderingPath(RenderingPath.Forward);
-        islandHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 75;
+        islandDimHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 250;
+        islandSpeedUpHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 400;
+        waterHeight = m_water.transform.position.y - 10;
     }
 
     void Update()
@@ -72,7 +78,7 @@ public class main : MonoBehaviour
         }
         else
         {
-
+            
             if (waving)
             {
 
@@ -82,7 +88,7 @@ public class main : MonoBehaviour
                     startPosition = m_dolphin.transform.position;
                     endPosition = finalPosition;
                     t = 0.0f;
-                    speed = 0.005f;
+                    speed = 0.0025f;
 
                 }
                 wasWaving = true;
@@ -92,7 +98,7 @@ public class main : MonoBehaviour
 
             if (wasWaving && wavingTimer < 5)
             {
-                m_camera.StartingWave();
+                //m_camera.StartingWave();
                 if (!m_dolphin.getStopMoving())
                 {
                     m_dolphin.StartingWave();
@@ -101,20 +107,27 @@ public class main : MonoBehaviour
                     startRotation = m_dolphin.transform.rotation;
                 }
              
-                    if (m_dolphin.transform.position.y >= (m_water.transform.position.y))
-                    {
-                        m_camera.setRenderingPath(RenderingPath.DeferredShading);
-                    }
-                    t += Time.deltaTime * speed;
-                    Quaternion interpolatedRotation = Quaternion.Lerp(startRotation, ascEndRotation, t * 100.0f);
-                    m_dolphin.setRotation(interpolatedRotation);
-                    Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
-                    float camDeltaY = interpolatedPosition.y - m_dolphin.transform.position.y;
-                    m_dolphin.setPosition(interpolatedPosition);
-                    m_camera.setPosition(new Vector3(m_camera.transform.position.x, m_camera.transform.position.y + camDeltaY, m_camera.transform.position.z));
-                    if (islandHeight > m_dolphin.transform.position.y)
-                        m_waterlight.UpdateUp(initialPosition.y, islandHeight, m_dolphin.transform.position.y);
-                    wavingTimer--;
+                if (m_dolphin.transform.position.y >= waterHeight)
+                {
+                    m_camera.setRenderingPath(RenderingPath.DeferredShading);
+                }
+                t += Time.deltaTime * speed;
+                Quaternion interpolatedRotation = Quaternion.Lerp(startRotation, ascEndRotation, t * 100.0f);
+                m_dolphin.setRotation(interpolatedRotation);
+                Vector3 interpolatedPosition = Vector3.Lerp(startPosition, endPosition, t);
+                float camDeltaY = interpolatedPosition.y - m_dolphin.transform.position.y;
+                m_dolphin.setPosition(interpolatedPosition);
+                m_camera.setPosition(new Vector3(m_camera.transform.position.x, m_camera.transform.position.y + camDeltaY, m_camera.transform.position.z));
+                if (waterHeight > m_dolphin.transform.position.y)
+                    m_waterlight.UpdateUp(initialPosition.y, waterHeight, m_dolphin.transform.position.y);
+                else if (islandDimHeight > m_dolphin.transform.position.y)
+                    m_sunlight.UpdateUp(initialPosition.y, islandDimHeight, m_dolphin.transform.position.y);
+                if (islandSpeedUpHeight < m_dolphin.transform.position.y)
+                {
+                    speed += 0.0001f;
+                }
+                Debug.Log(speed);
+                wavingTimer--;
                 
             }
             else if (falling)
@@ -122,11 +135,10 @@ public class main : MonoBehaviour
                
                 t += Time.deltaTime * speed;
                 Quaternion interpolatedRotation;
-                if (m_dolphin.transform.position.y <= (m_water.transform.position.y))
+                if (m_dolphin.transform.position.y <= waterHeight)
                 {
                     m_camera.setRenderingPath(RenderingPath.Forward);
                     level_out_t += Time.deltaTime * 1.1f;
-
                     interpolatedRotation = Quaternion.Lerp(descEndRotation, new Quaternion(descEndRotation.x, descEndRotation.y, 0, 1), level_out_t);
                     m_dolphin.setRotation(interpolatedRotation);
                 }
@@ -140,9 +152,11 @@ public class main : MonoBehaviour
                 float camDeltaY = m_dolphin.transform.position.y - interpolatedPosition.y;
                 m_dolphin.setPosition(interpolatedPosition);
                 m_camera.setPosition(new Vector3(m_camera.transform.position.x, m_camera.transform.position.y - camDeltaY, m_camera.transform.position.z));
-                if(islandHeight > m_dolphin.transform.position.y)
-                    m_waterlight.UpdateDown(initialPosition.y, islandHeight, m_dolphin.transform.position.y);
-                speed += 0.001f;
+                if(waterHeight > m_dolphin.transform.position.y)
+                    m_waterlight.UpdateDown(initialPosition.y, waterHeight, m_dolphin.transform.position.y);
+                else if (islandDimHeight > m_dolphin.transform.position.y)
+                    m_sunlight.UpdateDown(initialPosition.y, islandDimHeight, m_dolphin.transform.position.y);
+                speed += 0.00008f;
             }
             if (wavingTimer < 0)
             {
@@ -151,7 +165,7 @@ public class main : MonoBehaviour
             }
             if (!falling && !waving && !wasWaving && wavingTimer == 5)
             {
-                speed = 0.005f;
+                speed = 0.0025f;
                 t = 0.0f;
                 falling = true;
                 startRotation = m_dolphin.transform.rotation;

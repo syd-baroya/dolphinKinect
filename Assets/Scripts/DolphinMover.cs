@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DolphinMover : MonoBehaviour
 {
-    public float radius = 30;
+    public float radius = 5;
     public float speed = 25;
     public float speed_up_down = 0.3f;
     public float speed_tilt = 0.3f;
     public float maxTilt = 7.5f;
-    public float maxUpAndDown = 1.0f;
+    public float maxUpAndDown = 0.3f;
 
     private Animator myAnimator;
     private Vector3 middle;
