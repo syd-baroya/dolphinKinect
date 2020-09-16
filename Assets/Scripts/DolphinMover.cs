@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DolphinMover : MonoBehaviour
 {
+    public GameObject m_dolphin;
+    private float t = 0.0f;
     public float radius = 5;
     public float speed = 25;
     public float speed_up_down = 0.3f;
@@ -69,14 +71,22 @@ public class DolphinMover : MonoBehaviour
     {
         if (!stopMoving)
         {
-            float max_r = Vector3.Distance(start, middle);
-            float t = Mathf.InverseLerp(0.0f, max_r, Vector3.Distance(transform.position, middle));
 
+            //float max_r = Vector3.Distance(start, middle);
+            //float t = Mathf.InverseLerp(0.0f, max_r, Vector3.Distance(transform.position, middle));
+            //transform.position = Vector3.Lerp(start, middle, t);
+
+            t += Time.deltaTime;
             transform.position = Vector3.Lerp(start, middle, t);
             Debug.Log(t);
             if (t >= 1.0f)
                 stopMoving = true;
         }
+    }
+
+    public void SetActive(bool active)
+    {
+        m_dolphin.SetActive(active);
     }
 
 }
