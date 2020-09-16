@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class DolphinMover : MonoBehaviour
 {
+    private float bloom = 0f;
     public GameObject m_dolphin;
+    private Bloom bloomLayer = null;
     private float t = 0.0f;
     public float radius = 5;
     public float speed = 25;
@@ -29,6 +32,9 @@ public class DolphinMover : MonoBehaviour
         transform.Translate(new Vector3(radius, 0, 0));
         transform.Rotate(new Vector3(0, 90, 0));
 
+        PostProcessVolume volume = m_dolphin.GetComponent<PostProcessVolume>();
+        volume.profile.TryGetSettings(out bloomLayer);
+        bloomLayer.intensity.value = bloom;
 
     }
 
@@ -78,7 +84,6 @@ public class DolphinMover : MonoBehaviour
 
             t += Time.deltaTime;
             transform.position = Vector3.Lerp(start, middle, t);
-            Debug.Log(t);
             if (t >= 1.0f)
                 stopMoving = true;
         }
@@ -89,4 +94,25 @@ public class DolphinMover : MonoBehaviour
         m_dolphin.SetActive(active);
     }
 
+    public void SetBloom(float value)
+    {
+        bloomLayer.intensity.value = value;
+        bloom = value;
+    }
+
+    public float GetBloom()
+    {
+        return bloom;
+    }
+
+    public void IncrBloom()
+    {
+        bloomLayer.intensity.value = bloomLayer.intensity.value + 1;
+        bloom++;
+    }
+    public void DecrBloom()
+    {
+        bloomLayer.intensity.value = bloomLayer.intensity.value - 1;
+        bloom--;
+    }
 }

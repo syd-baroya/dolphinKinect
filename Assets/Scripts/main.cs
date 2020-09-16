@@ -9,7 +9,7 @@ public class main : MonoBehaviour
     public DolphinMover m_dolphin;
     public CameraBehavior m_camera;
     public GameObject m_lensflare;
-    public GameObject m_butterflies;
+    public ButterflyBehavior m_butterflies;
     private bool bright_full = false;
     //public GameObject m_water;
     //public WaterLightBehavior m_waterlight;
@@ -52,6 +52,8 @@ public class main : MonoBehaviour
         //islandDimHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 250;
         //islandSpeedUpHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 400;
         //waterHeight = m_water.transform.position.y - 10;
+        m_dolphin.SetActive(true);
+        m_butterflies.SetActive(false);
     }
 
     void Update()
@@ -84,12 +86,14 @@ public class main : MonoBehaviour
 
             else
             {
-                if (m_lensflare.GetComponent<LensFlare>().brightness < 2 && !bright_full)
-                    m_lensflare.GetComponent<LensFlare>().brightness += 0.01f;
+                if (m_dolphin.GetBloom() < 80 && !bright_full)
+                {
+                    m_dolphin.IncrBloom();
+                }
                 else
                 {
                     bright_full = true;
-                    m_lensflare.GetComponent<LensFlare>().brightness -= 0.01f;
+                    m_butterflies.DecrBloom();
                     m_dolphin.SetActive(false);
                     m_butterflies.SetActive(true);
                 }
