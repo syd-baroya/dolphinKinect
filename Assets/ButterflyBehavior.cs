@@ -5,22 +5,68 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class ButterflyBehavior : MonoBehaviour
 {
-    private float bloom = 150f;
+    public float minX;
+    public float maxX;
+    public float minY;
+    public float maxY;
+    public float minZ;
+    public float maxZ;
+    private float[] t;
+    private float[] rand_t;
+    private float bloom = 90f;
     public GameObject m_butterfiles;
+    public GameObject[] m_allButterFlies;
     private Bloom bloomLayer = null;
+    private Vector3[] oldPos;
+    private Vector3[] targetPos;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+
         PostProcessVolume volume = m_butterfiles.GetComponentInChildren<PostProcessVolume>();
         volume.profile.TryGetSettings(out bloomLayer);
         bloomLayer.intensity.value = bloom;
+        t = new float[m_allButterFlies.Length];
+        rand_t = new float[m_allButterFlies.Length];
+        for (int i = 0; i < t.Length; i++)
+        {
+            t[i] = 0.0f;
+            rand_t[i] = 0.0f;
+        }
+            oldPos = new Vector3[m_allButterFlies.Length];
+        targetPos = new Vector3[m_allButterFlies.Length];
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        float randX;
+        float randY;
+        float randZ;
+        if (bloom < 1)
+        {
+            for (int i = 0; i < m_allButterFlies.Length; i++)
+            {
+                if (t[i] == 0.0f)
+                {
+                    randX = Random.Range(minX, maxX);
+                    randY = Random.Range(minY, maxY);
+                    randZ = Random.Range(minZ, maxZ);
+                    rand_t[i] = Random.Range(0.005f, 0.02f);
+                    targetPos[i] = new Vector3(randX, randY, randZ);
+                    oldPos[i] = m_allButterFlies[i].transform.position;
+                }
+                else
+                    m_allButterFlies[i].transform.position = Vector3.Lerp(oldPos[i], targetPos[i], t[i]);
+                
+                t[i] += rand_t[i];
+                if (t[i] >= 1f)
+                    t[i] = 0.0f;
+            }
+        }
     }
+
     public void SetActive(bool active)
     {
         m_butterfiles.SetActive(active);

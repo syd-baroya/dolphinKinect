@@ -11,6 +11,9 @@ public class main : MonoBehaviour
     public GameObject m_lensflare;
     public ButterflyBehavior m_butterflies;
     private bool bright_full = false;
+    private bool played = false;
+    private bool drawDolphin = true;
+    private bool drawButterflies = false;
     //public GameObject m_water;
     //public WaterLightBehavior m_waterlight;
     //public SunLightBehavior m_sunlight;
@@ -92,10 +95,19 @@ public class main : MonoBehaviour
                 }
                 else
                 {
+                    if (drawDolphin)
+                    {
+                        m_dolphin.SetActive(false);
+                        drawDolphin = false;
+                    }
+                    if (!drawButterflies)
+                    {
+                        m_butterflies.SetActive(true);
+                        drawButterflies = true;
+                    }
                     bright_full = true;
                     m_butterflies.DecrBloom();
-                    m_dolphin.SetActive(false);
-                    m_butterflies.SetActive(true);
+                   
                 }
 
             }

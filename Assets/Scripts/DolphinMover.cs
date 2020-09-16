@@ -28,6 +28,7 @@ public class DolphinMover : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         middle = transform.position;
         transform.Translate(new Vector3(radius, 0, 0));
         transform.Rotate(new Vector3(0, 90, 0));
