@@ -19,6 +19,9 @@ public class ButterflyBehavior : MonoBehaviour
     private Bloom bloomLayer = null;
     private Vector3[] oldPos;
     private Vector3[] targetPos;
+    public Texture startTexture;
+    private Texture[] endTexture;
+    private bool texChanged = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -35,8 +38,18 @@ public class ButterflyBehavior : MonoBehaviour
         }
             oldPos = new Vector3[m_allButterFlies.Length];
         targetPos = new Vector3[m_allButterFlies.Length];
+        //startColor = Color.gray;
+        //endTexture = GetComponent<Renderer>().material.color;
+
+        endTexture = new Texture[m_allButterFlies.Length];
+        for (int i = 0; i < m_allButterFlies.Length; i++)
+        {
+            endTexture[i] = m_allButterFlies[i].GetComponentInChildren<Renderer>().material.GetTexture("_MainTex");
+            m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", startTexture);
+        }
 
     }
+
 
     // Update is called once per frame
     void Update()
@@ -44,28 +57,40 @@ public class ButterflyBehavior : MonoBehaviour
         float randX;
         float randY;
         float randZ;
-        if (bloom < 1)
+
+        for (int i = 0; i < m_allButterFlies.Length; i++)
+        {
+            if (t[i] == 0.0f)
+            {
+                randX = Random.Range(minX, maxX);
+                randY = Random.Range(minY, maxY);
+                randZ = Random.Range(minZ, maxZ);
+                rand_t[i] = Random.Range(0.005f, 0.02f);
+                targetPos[i] = new Vector3(randX, randY, randZ);
+                oldPos[i] = m_allButterFlies[i].transform.position;
+            }
+            else
+                m_allButterFlies[i].transform.position = Vector3.Lerp(oldPos[i], targetPos[i], t[i]);
+                
+            t[i] += rand_t[i];
+            if (t[i] >= 1f)
+                t[i] = 0.0f;
+
+            //m_allButterFlies[i].GetComponent<Renderer>().material.color = Texture.Lerp(startTexture, endTexture[i], 1.0f / (bloom + 1.0f));
+        }
+        //GetComponent<Renderer>().material.color = Vector4.Lerp(startColor, endColor, 1.0f / (bloom + 1.0f));
+        if (bloom <= 38 && !texChanged)
         {
             for (int i = 0; i < m_allButterFlies.Length; i++)
             {
-                if (t[i] == 0.0f)
-                {
-                    randX = Random.Range(minX, maxX);
-                    randY = Random.Range(minY, maxY);
-                    randZ = Random.Range(minZ, maxZ);
-                    rand_t[i] = Random.Range(0.005f, 0.02f);
-                    targetPos[i] = new Vector3(randX, randY, randZ);
-                    oldPos[i] = m_allButterFlies[i].transform.position;
-                }
-                else
-                    m_allButterFlies[i].transform.position = Vector3.Lerp(oldPos[i], targetPos[i], t[i]);
-                
-                t[i] += rand_t[i];
-                if (t[i] >= 1f)
-                    t[i] = 0.0f;
+
+                m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", endTexture[i]);
+
             }
+            texChanged = true;
         }
     }
+
 
     public void SetActive(bool active)
     {

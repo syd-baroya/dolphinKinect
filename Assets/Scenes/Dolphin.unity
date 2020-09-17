@@ -5590,7 +5590,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920172504}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.2, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 639401632}
@@ -10364,7 +10364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 138252, guid: be999fe03c257ec4cb0a3a4b5ca72217, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 138252, guid: be999fe03c257ec4cb0a3a4b5ca72217, type: 3}
       propertyPath: m_Layer
@@ -15423,7 +15423,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 971a5265c2e6e3d4197d9877cf46b059, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 2a80e137cfd2826418cb3be79d96fdac, type: 2}
+      objectReference: {fileID: 2100000, guid: dd75b9d0a6a98e0498de3f7872367f50, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 971a5265c2e6e3d4197d9877cf46b059, type: 3}
 --- !u!4 &1321787547 stripped
@@ -15674,7 +15674,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570409302}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.75, y: 0.88, z: -1.46}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 101930835}
@@ -15706,7 +15706,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1580054362}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.291, y: 0.348, z: -0.918}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1807606859}
@@ -16268,7 +16268,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023577245}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.56, y: -0.14, z: 4.64}
+  m_LocalPosition: {x: 0, y: 0.41, z: 0.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1580054363}
@@ -16298,8 +16298,9 @@ MonoBehaviour:
   m_butterfiles: {fileID: 2023577245}
   m_allButterFlies:
   - {fileID: 920172504}
-  - {fileID: 1580054362}
   - {fileID: 1570409302}
+  - {fileID: 1580054362}
+  startTexture: {fileID: 2800000, guid: 8b364911862a843489b344ea159f1d85, type: 3}
 --- !u!1 &2090441770
 GameObject:
   m_ObjectHideFlags: 0
