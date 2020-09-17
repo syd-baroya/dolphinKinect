@@ -11029,8 +11029,8 @@ ParticleSystem:
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 0.9953613
-          value: 0.24324036
+          time: 1
+          value: 0.21621704
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -13798,7 +13798,7 @@ ParticleSystem:
     - serializedVersion: 3
       emitter: {fileID: 1147489401}
       type: 0
-      properties: -1
+      properties: 5
       emitProbability: 1
   LightsModule:
     enabled: 0
@@ -16145,7 +16145,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 0.25675672
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -18913,7 +18913,7 @@ ParticleSystem:
     - serializedVersion: 3
       emitter: {fileID: 280968466}
       type: 0
-      properties: -1
+      properties: 5
       emitProbability: 1
   LightsModule:
     enabled: 0
@@ -25652,7 +25652,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0
+          value: 0.2702713
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -28420,7 +28420,7 @@ ParticleSystem:
     - serializedVersion: 3
       emitter: {fileID: 242193253}
       type: 0
-      properties: -1
+      properties: 5
       emitProbability: 1
   LightsModule:
     enabled: 0
