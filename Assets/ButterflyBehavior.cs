@@ -16,12 +16,15 @@ public class ButterflyBehavior : MonoBehaviour
     private float bloom = 90f;
     public GameObject m_butterfiles;
     public GameObject[] m_allButterFlies;
+    private ParticleSystem[] m_particleTrails;
     private Bloom bloomLayer = null;
     private Vector3[] oldPos;
     private Vector3[] targetPos;
     public Texture startTexture;
     private Texture[] endTexture;
     private bool texChanged = false;
+    public Gradient startGradient;
+    private Gradient[] endGradient;
     // Start is called before the first frame update
     void Awake()
     {
@@ -42,12 +45,20 @@ public class ButterflyBehavior : MonoBehaviour
         //endTexture = GetComponent<Renderer>().material.color;
 
         endTexture = new Texture[m_allButterFlies.Length];
+        m_particleTrails = new ParticleSystem[m_allButterFlies.Length];
         for (int i = 0; i < m_allButterFlies.Length; i++)
         {
             endTexture[i] = m_allButterFlies[i].GetComponentInChildren<Renderer>().material.GetTexture("_MainTex");
+            m_particleTrails[i] = m_allButterFlies[i].GetComponentInChildren<ParticleSystem>();
             m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", startTexture);
         }
-
+        endGradient = new Gradient[m_particleTrails.Length];
+        for (int i = 0; i < m_particleTrails.Length; i++)
+        {
+            var col = m_particleTrails[i].colorOverLifetime;
+            endGradient[i] = col.color.gradient;
+            col.color = startGradient;
+        }
     }
 
 
@@ -79,13 +90,14 @@ public class ButterflyBehavior : MonoBehaviour
             //m_allButterFlies[i].GetComponent<Renderer>().material.color = Texture.Lerp(startTexture, endTexture[i], 1.0f / (bloom + 1.0f));
         }
         //GetComponent<Renderer>().material.color = Vector4.Lerp(startColor, endColor, 1.0f / (bloom + 1.0f));
-        if (bloom <= 38 && !texChanged)
+        if (bloom <= 30 && !texChanged)
         {
             for (int i = 0; i < m_allButterFlies.Length; i++)
             {
 
                 m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", endTexture[i]);
-
+                var col = m_particleTrails[i].colorOverLifetime;
+                col.color = endGradient[i];
             }
             texChanged = true;
         }
@@ -115,8 +127,8 @@ public class ButterflyBehavior : MonoBehaviour
     }
     public void DecrBloom()
     {
-        bloomLayer.intensity.value = bloomLayer.intensity.value - 1;
-        bloom--;
+        bloomLayer.intensity.value -= 0.5f;
+        bloom -= 0.5f;
     }
 
 }
