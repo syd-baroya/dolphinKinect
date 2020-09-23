@@ -8,8 +8,8 @@ public class main : MonoBehaviour
     public TrackerHandler m_tracker;
     public DolphinMover m_dolphin;
     public CameraBehavior m_camera;
-    public GameObject m_lensflare;
     public ButterflyBehavior m_butterflies;
+    public ButterflyEyeBehavior m_eyeButterflies;
     private bool bright_full = false;
     private bool played = false;
     private bool drawDolphin = true;
@@ -20,7 +20,7 @@ public class main : MonoBehaviour
     //public GameObject m_terrain;
     private BackgroundDataProvider m_backgroundDataProvider;
     public BackgroundData m_lastFrameData = new BackgroundData();
-    private bool waving = false;
+    private int waving = 0;
     //private float speed = 0.0025f;
     //private float t = 0.0f;
     //private float level_out_t = 0.0f;
@@ -43,18 +43,6 @@ public class main : MonoBehaviour
         const int TRACKER_ID = 0;
         m_skeletalTrackingProvider.StartClientThread(TRACKER_ID);
         m_backgroundDataProvider = m_skeletalTrackingProvider;
-        //initialPosition = m_dolphin.transform.position;
-        //startPosition = initialPosition;
-        //finalPosition = new Vector3(m_dolphin.transform.position.x, 3000, m_dolphin.transform.position.z);
-        //endPosition = finalPosition;
-        //startRotation = m_dolphin.transform.rotation;
-        //ascEndRotation = new Quaternion(0, 0, Mathf.PI / 4, 1);
-        //descEndRotation = new Quaternion(0, 0, -Mathf.PI / 4, 1);
-        ////userRenderPath = m_camera.GetComponentInChildren<Camera>().renderingPath;
-        //m_camera.setRenderingPath(RenderingPath.Forward);
-        //islandDimHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 250;
-        //islandSpeedUpHeight = m_terrain.GetComponent<Terrain>().terrainData.size.y - 400;
-        //waterHeight = m_water.transform.position.y - 10;
         m_dolphin.SetActive(true);
         m_butterflies.SetActive(false);
     }
@@ -72,8 +60,10 @@ public class main : MonoBehaviour
                 {
 
                     waving = m_tracker.updateTracker(m_lastFrameData);
-                    if (waving)
+                    if (waving > 0)
                         waveStarted = true;
+                    else
+                        waveStarted = false;
                 }
             }
         }
@@ -84,33 +74,53 @@ public class main : MonoBehaviour
         }
         else
         {
-            if (!m_dolphin.getStopMoving())
-                m_dolphin.StartingWave();
-
-            else
+            if (waving == 1)
             {
-                if (m_dolphin.GetBloom() < 80 && !bright_full)
+                if (m_eyeButterflies.Playing())
                 {
-                    m_dolphin.IncrBloom();
+                    m_dolphin.SetActive(true);
+                    m_butterflies.SetActive(false);
+                    m_eyeButterflies.Stop();
                 }
+                if (!m_dolphin.getStopMoving())
+                    m_dolphin.StartingWave();
+
                 else
                 {
-                    if (drawDolphin)
+                    if (m_dolphin.GetBloom() < 80 && !bright_full)
                     {
-                        m_dolphin.SetActive(false);
-                        drawDolphin = false;
+                        m_dolphin.IncrBloom();
                     }
-                    if (!drawButterflies)
+                    else
                     {
-                        m_butterflies.SetActive(true);
-                        drawButterflies = true;
-                    }
-                    bright_full = true;
-                    m_butterflies.DecrBloom();
-                   
-                }
+                        if (drawDolphin)
+                        {
+                            m_dolphin.SetActive(false);
+                            drawDolphin = false;
+                        }
+                        if (!drawButterflies)
+                        {
+                            m_butterflies.SetActive(true);
+                            drawButterflies = true;
+                        }
+                        bright_full = true;
+                        m_butterflies.DecrBloom();
 
+                    }
+
+                }
             }
+
+            else if(waving==2)
+            {
+                if (!m_eyeButterflies.Playing())
+                {
+                    m_dolphin.SetActive(false);
+                    m_butterflies.SetActive(false);
+                    m_eyeButterflies.Play();
+                }
+            }
+
         }
         //else
         //{

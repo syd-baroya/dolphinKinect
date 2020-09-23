@@ -101,15 +101,20 @@ public class TrackerHandler : MonoBehaviour
         basisJointMap[JointId.EarRight] = spineHipBasis;
     }
 
-    public bool updateTracker(BackgroundData trackerFrameData)
+    public int updateTracker(BackgroundData trackerFrameData)
     {
         //this is an array in case you want to get the n closest bodies
         int closestBody = findClosestTrackedBody(trackerFrameData);
 
         // render the closest body
         Body skeleton = trackerFrameData.Bodies[closestBody];
-        //renderSkeleton(skeleton, 0);
-        return trackWaving(skeleton);
+        renderSkeleton(skeleton, 0);
+        if (trackWavingLeft(skeleton))
+            return 1;
+        else if (trackWavingRight(skeleton))
+            return 2;
+        else
+            return 0;
     }
 
     int findIndexFromId(BackgroundData frameData, int id)
@@ -155,10 +160,16 @@ public class TrackerHandler : MonoBehaviour
         }
     }
 
-    public bool trackWaving(Body skeleton)
+    public bool trackWavingLeft(Body skeleton)
     {
-        return (skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) && 
-                (skeleton.JointPositions3D[(int)JointId.ElbowRight].X < skeleton.JointPositions3D[(int)JointId.ShoulderRight].X);
+        return (skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&
+               (skeleton.JointPositions3D[(int)JointId.HipRight].X < skeleton.JointPositions3D[(int)JointId.HandRight].X);
+    }
+
+    public bool trackWavingRight(Body skeleton)
+    {
+        return (skeleton.JointPositions3D[(int)JointId.ElbowLeft].Y < skeleton.JointPositions3D[(int)JointId.ShoulderLeft].Y) && 
+                (skeleton.JointPositions3D[(int)JointId.HipLeft].X > skeleton.JointPositions3D[(int)JointId.HandLeft].X);
     }
 
     public void renderSkeleton(Body skeleton, int skeletonNumber)

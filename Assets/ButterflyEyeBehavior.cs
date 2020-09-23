@@ -15,6 +15,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     int frameCount = 0;
     float timer = 0f;
     bool allParticlesChanged = false;
+    bool playing = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -81,13 +82,13 @@ public class ButterflyEyeBehavior : MonoBehaviour
             timer += Time.deltaTime;
             noise.enabled = false;
             renderer.material.SetFloat("_Speed", 0);
-            if (timer >= 1f && timer < 3.4f)
+            if (timer >= 1f && timer < 3.1f)
             {
                 animToEye.fps = 4f;
                 animToEye.mode = ParticleSystemAnimationMode.Grid;
 
             }
-            else if (timer >= 3.4f)
+            else if (timer >= 3.1f)
             {
                 animToEye.fps = 0.0001f;
                 animToEye.startFrame = 1;
@@ -96,5 +97,21 @@ public class ButterflyEyeBehavior : MonoBehaviour
 
         }
 
+    }
+
+    public bool Playing()
+    {
+        return playing;
+    }
+    public void Play()
+    {
+        playing = true;
+        ps.Play();
+    }
+
+    public void Stop()
+    {
+        playing = false;
+        ps.Stop();
     }
 }
