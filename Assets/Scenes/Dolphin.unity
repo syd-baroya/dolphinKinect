@@ -31304,7 +31304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dolphin: {fileID: 1888532545}
-  radius: 6
+  radius: 4
   speed: 25
   speed_up_down: 0.3
   speed_tilt: 0.3
