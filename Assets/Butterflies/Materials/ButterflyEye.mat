@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Butterfly 1
-  m_Shader: {fileID: 4800000, guid: f1596fa06deb9ed4a813a2262a664261, type: 3}
+  m_Name: ButterflyEye
+  m_Shader: {fileID: 4800000, guid: 0cf829316e1cd234d9a4e7f11e48d64c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -20,18 +20,13 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e9a19c18e82776347bcb1bdc294604f1, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _texcoord:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f7795d9b1a857d548a076a06d82a26c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Emission: 2
-    - _Speed: 14.56
-    - _WingPower: 1
-    - _Wingmaxdown: 0.2
-    - __dirty: 1
+    - _Emission: 1.5
+    - _Speed: 20
+    - _WingPower: 0.2
+    - _Wingmaxdown: 0.5
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
