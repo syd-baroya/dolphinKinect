@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ButterflyEye
-  m_Shader: {fileID: 4800000, guid: f0765287645693544926cc5775cfa53e, type: 3}
+  m_Name: ButterflyEye3
+  m_Shader: {fileID: 4800000, guid: 6f0237087e6b7024bac0d53794017f1f, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

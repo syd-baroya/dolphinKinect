@@ -9,11 +9,12 @@ public class main : MonoBehaviour
     public DolphinMover m_dolphin;
     public CameraBehavior m_camera;
     public ButterflyBehavior m_butterflies;
-    public ButterflyEyeBehavior m_eyeButterflies;
+    public EyeEffectBehavior m_eyeButterflies;
     private bool bright_full = false;
-    private bool played = false;
     private bool drawDolphin = true;
     private bool drawButterflies = false;
+    private bool drawEyes = false;
+
     //public GameObject m_water;
     //public WaterLightBehavior m_waterlight;
     //public SunLightBehavior m_sunlight;
@@ -44,8 +45,10 @@ public class main : MonoBehaviour
         const int TRACKER_ID = 0;
         m_skeletalTrackingProvider.StartClientThread(TRACKER_ID);
         m_backgroundDataProvider = m_skeletalTrackingProvider;
-        m_dolphin.SetActive(false);
-        m_butterflies.SetActive(true);
+        m_dolphin.SetActive(true);
+        m_butterflies.SetActive(false);
+        m_eyeButterflies.SetActive(false);
+
     }
 
     void Update()
@@ -53,86 +56,131 @@ public class main : MonoBehaviour
 
 
 
-        //if (m_backgroundDataProvider.IsRunning)
-        //{
-        //    if (m_backgroundDataProvider.GetCurrentFrameData(ref m_lastFrameData))
-        //    {
-        //        if (m_lastFrameData.NumOfBodies != 0)
-        //        {
+        if (m_backgroundDataProvider.IsRunning)
+        {
+            if (m_backgroundDataProvider.GetCurrentFrameData(ref m_lastFrameData))
+            {
+                if (m_lastFrameData.NumOfBodies != 0)
+                {
 
-        //            waving = m_tracker.updateTracker(m_lastFrameData);
-        //            if (waving > 0)
-        //                waveStarted = true;
-        //            else
-        //                waveStarted = false;
-        //        }
-        //    }
-        //}
-        //if (!waveStarted)
-        //{
-        //    m_dolphin.swimAround();
-           
-        //}
-        //else
-        //{
-        //    if (waving == 1)
-        //    {
-               
-        //        if (!m_dolphin.getStopMoving())
-        //            m_dolphin.StartingWave();
+                    waving = m_tracker.updateTracker(m_lastFrameData);
+                    if (waving > 0)
+                        waveStarted = true;
+                    else
+                    {
+                        waveStarted = false;
+                        m_dolphin.SetActive(true);
+                        m_butterflies.SetActive(false);
+                        m_eyeButterflies.SetActive(false);
+                        bright_full = false;
+                        drawDolphin = true;
 
-        //        else
-        //        {
-        //            if (m_dolphin.GetBloom() < 80 && !bright_full)
-        //            {
-        //                m_dolphin.IncrBloom();
-        //            }
-        //            else
-        //            {
-        //                if (drawDolphin)
-        //                {
-        //                    m_dolphin.SetActive(false);
-        //                    drawDolphin = false;
-        //                }
-        //                if (!drawButterflies)
-        //                {
-        //                    m_butterflies.SetActive(true);
-        //                    drawButterflies = true;
-        //                }
-        //                bright_full = true;
-        //                m_butterflies.DecrBloom();
+                    }
+                }
+            }
+        }
+        if (!waveStarted)
+        {
+            if (drawButterflies)
+            {
 
-        //            }
-
-        //        }
-        //    }
-
-        //    else if(waving==2)
-        //    {
                 if (!m_butterflies.getStopMoving())
                     m_butterflies.StopEffect();
                 else
+                    m_butterflies.IncrBloom();
+
+                drawButterflies = false;
+                if (m_butterflies.GetBloom() >= 80)
+                    drawDolphin = true;
+            }
+            else if (drawEyes)
+            {
+
+                if (!m_eyeButterflies.getStopMoving())
+                    m_eyeButterflies.StopEffect();
+                else
+                    m_eyeButterflies.IncrBloom();
+
+                drawEyes = false;
+                if (m_eyeButterflies.GetBloom() >= 80)
+                    drawDolphin = true;
+            }
+            if (drawDolphin)
+            {
+                if (m_dolphin.GetBloom() > 0)
+                    m_dolphin.DecrBloom();
+                m_dolphin.swimAround();
+            }
+
+        }
+        else
+        {
+            if (waving == 1)
+            {
+
+                if (!m_dolphin.getStopMoving())
+                    m_dolphin.StartingWave();
+
+                else
                 {
-                    if (m_butterflies.GetBloom() < 30)
+                    if (m_dolphin.GetBloom() < 80 && !bright_full)
                     {
-                        m_butterflies.IncrBloom();
+                        m_dolphin.IncrBloom();
                     }
                     else
                     {
-                        m_dolphin.SetActive(true);
-                        m_butterflies.SetActive(false);
-                        m_dolphin.DecrBloom();
+                        if (drawDolphin)
+                        {
+                            m_dolphin.SetActive(false);
+                            drawDolphin = false;
+                        }
+                        if (!drawButterflies)
+                        {
+                            m_butterflies.SetActive(true);
+                            drawButterflies = true;
+                        }
+                        bright_full = true;
+                        m_butterflies.DecrBloom();
 
-                        if (m_dolphin.GetBloom() <= 0 && effectTimer > 3)
-                            m_eyeButterflies.PlayEffect();
-                        else if (m_dolphin.GetBloom() <= 0)
-                            effectTimer += Time.deltaTime;
                     }
 
                 }
-        //    }
+            }
 
-        //}
+            else if (waving == 2)
+            {
+                if (!m_dolphin.getStopMoving())
+                    m_dolphin.StartingWave();
+
+                else
+                {
+                    if (m_dolphin.GetBloom() < 80 && !bright_full)
+                    {
+                        m_dolphin.IncrBloom();
+                    }
+                    else
+                    {
+                        if (drawDolphin)
+                        {
+                            m_dolphin.SetActive(false);
+                            drawDolphin = false;
+                        }
+                        if (!drawEyes)
+                        {
+                            m_eyeButterflies.SetActive(true);
+                            drawEyes = true;
+                        }
+                        bright_full = true;
+                        if(m_eyeButterflies.GetBloom()>0)
+                            m_eyeButterflies.DecrBloom();
+                        else
+                            m_eyeButterflies.PlayEffect();
+                    }
+
+                }
+            }
+
+        }
         //else
         //{
 

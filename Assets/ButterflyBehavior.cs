@@ -112,6 +112,7 @@ public class ButterflyBehavior : MonoBehaviour
     public void SetActive(bool active)
     {
         m_butterfiles.SetActive(active);
+        stopEffect = !active;
     }
 
     public void SetBloom(float value)
