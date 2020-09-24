@@ -25,6 +25,10 @@ public class ButterflyBehavior : MonoBehaviour
     private bool texChanged = false;
     public Gradient startGradient;
     private Gradient[] endGradient;
+    private float moveToMiddleT = 0f;
+    private Vector3 middle = Vector3.zero;
+    private bool stopMoving = false;
+    private bool stopEffect = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -65,41 +69,42 @@ public class ButterflyBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float randX;
-        float randY;
-        float randZ;
-
-        for (int i = 0; i < m_allButterFlies.Length; i++)
+        if (!stopEffect)
         {
-            if (t[i] == 0.0f)
-            {
-                randX = Random.Range(minX, maxX);
-                randY = Random.Range(minY, maxY);
-                randZ = Random.Range(minZ, maxZ);
-                rand_t[i] = Random.Range(0.005f, 0.02f);
-                targetPos[i] = new Vector3(randX, randY, randZ);
-                oldPos[i] = m_allButterFlies[i].transform.position;
-            }
-            else
-                m_allButterFlies[i].transform.position = Vector3.Lerp(oldPos[i], targetPos[i], t[i]);
-                
-            t[i] += rand_t[i];
-            if (t[i] >= 1f)
-                t[i] = 0.0f;
+            float randX;
+            float randY;
+            float randZ;
 
-            //m_allButterFlies[i].GetComponent<Renderer>().material.color = Texture.Lerp(startTexture, endTexture[i], 1.0f / (bloom + 1.0f));
-        }
-        //GetComponent<Renderer>().material.color = Vector4.Lerp(startColor, endColor, 1.0f / (bloom + 1.0f));
-        if (bloom <= 30 && !texChanged)
-        {
             for (int i = 0; i < m_allButterFlies.Length; i++)
             {
+                if (t[i] == 0.0f)
+                {
+                    randX = Random.Range(minX, maxX);
+                    randY = Random.Range(minY, maxY);
+                    randZ = Random.Range(minZ, maxZ);
+                    rand_t[i] = Random.Range(0.005f, 0.02f);
+                    targetPos[i] = new Vector3(randX, randY, randZ);
+                    oldPos[i] = m_allButterFlies[i].transform.position;
+                }
+                else
+                    m_allButterFlies[i].transform.position = Vector3.Lerp(oldPos[i], targetPos[i], t[i]);
 
-                m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", endTexture[i]);
-                var col = m_particleTrails[i].colorOverLifetime;
-                col.color = endGradient[i];
+                t[i] += rand_t[i];
+                if (t[i] >= 1f)
+                    t[i] = 0.0f;
+
             }
-            texChanged = true;
+            if (bloom <= 30 && !texChanged)
+            {
+                for (int i = 0; i < m_allButterFlies.Length; i++)
+                {
+
+                    m_allButterFlies[i].GetComponentInChildren<Renderer>().material.SetTexture("_MainTex", endTexture[i]);
+                    var col = m_particleTrails[i].colorOverLifetime;
+                    col.color = endGradient[i];
+                }
+                texChanged = true;
+            }
         }
     }
 
@@ -129,6 +134,27 @@ public class ButterflyBehavior : MonoBehaviour
     {
         bloomLayer.intensity.value -= 0.5f;
         bloom -= 0.5f;
+    }
+
+    public void StopEffect()
+    {
+        stopEffect = true;
+        if (!stopMoving)
+        {
+            moveToMiddleT += Time.deltaTime;
+            for (int i = 0; i < m_allButterFlies.Length; i++)
+            {
+
+                transform.position = Vector3.Lerp(oldPos[i], middle, moveToMiddleT);
+            }
+            if (moveToMiddleT >= 1f)
+                stopMoving = true;
+        }
+    }
+
+    public bool getStopMoving()
+    {
+        return stopMoving;
     }
 
 }

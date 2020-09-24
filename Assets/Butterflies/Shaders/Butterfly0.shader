@@ -1,6 +1,6 @@
 //This shader is created in Amplify, but then modificated in notepad!
 
-Shader "ERB/Particles/Butterfly"
+Shader "ERB/Particles/Butterfly0"
 {
 	Properties
 	{
@@ -88,11 +88,8 @@ Shader "ERB/Particles/Butterfly"
 				{
 					float2 uv_MainTex = i.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 					float4 tex2DNode2 = tex2D( _MainTex, uv_MainTex );
-					//float4 appendResult57 = (float4((( tex2DNode2 * _Color * i.color * _Emission )).rgb , ( tex2DNode2.a * _Color.a * i.color.a )));
-					fixed4 col = (float4(((tex2DNode2 * i.color)).rgb, (tex2DNode2.a * i.color.a)));;
-					if (col.g>0.2)
-						col.rgb = tex2DNode2.rgb * _NewColor.rgb;
-
+					fixed4 col = tex2DNode2;
+					col.rgb = col.rgb;
 					//UNITY_APPLY_FOG(i.fogCoord, col);
 					return col;
 				}

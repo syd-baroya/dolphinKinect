@@ -10,11 +10,17 @@ public class ButterflyEyeBehavior : MonoBehaviour
     bool flyingAround;
     float speed;
     float movingDeltaTime = 0;
-    // Range over which height varies.
-    float heightScale = 1.0f;
+    Vector3 from;
+    Vector3 to;
+    public float minX;
+    public float maxX;
+    public float minY;
+    public float maxY;
+    public float minZ;
+    public float maxZ;
+    private float flyingT;
+    private float rand_t;
 
-    // Distance covered per second along X axis of Perlin plane.
-    float xScale = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +29,8 @@ public class ButterflyEyeBehavior : MonoBehaviour
         transformToEye = false;
         flyingAround = true;
         offsets = GetComponent<Renderer>().material.GetTextureOffset("_MainTex");
+
+        from = transform.position;
     }
 
     // Update is called once per frame
@@ -44,19 +52,21 @@ public class ButterflyEyeBehavior : MonoBehaviour
         }
         if (flyingAround)
         {
-            float height = heightScale * Mathf.PerlinNoise(Time.time * xScale, 0.0f);
-            Vector3 pos = transform.position;
-            float rand = Random.Range(0, 2);
-            if (rand == 1)
-                height = -height;
-            rand = Random.Range(0, 3);
-            if (rand==0)
-                pos.x += height;
-            if (rand == 1)
-                pos.y += height;
-            if (rand == 2)
-                pos.z += height;
+  
+            if (flyingT == 0.0f)
+            {
+                float randX = Random.Range(minX, maxX);
+                float randY = Random.Range(minY, maxY);
+                float randZ = Random.Range(minZ, maxZ);
+                rand_t = Random.Range(0.005f, 0.02f);
+                to = new Vector3(randX, randY, transform.position.z);
+                from = transform.position;
+            }
+            Vector3 pos = Vector3.Lerp(from, to, flyingT);
             transform.position = pos;
+            flyingT += rand_t;
+            if (flyingT >= 1f)
+                flyingT = 0.0f;
         }
     }
 
