@@ -76,12 +76,7 @@ public class main : MonoBehaviour
         {
             if (waving == 1)
             {
-                if (m_eyeButterflies.Playing())
-                {
-                    m_dolphin.SetActive(true);
-                    m_butterflies.SetActive(false);
-                    m_eyeButterflies.Stop();
-                }
+               
                 if (!m_dolphin.getStopMoving())
                     m_dolphin.StartingWave();
 
@@ -113,12 +108,7 @@ public class main : MonoBehaviour
 
             else if(waving==2)
             {
-                if (!m_eyeButterflies.Playing())
-                {
-                    m_dolphin.SetActive(false);
-                    m_butterflies.SetActive(false);
-                    m_eyeButterflies.Play();
-                }
+                m_eyeButterflies.PlayEffect();
             }
 
         }

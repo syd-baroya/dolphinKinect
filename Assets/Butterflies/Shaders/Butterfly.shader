@@ -6,6 +6,7 @@ Shader "ERB/Particles/Butterfly"
 	{
 		_MainTex("MainTex", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
+		_NewColor("New Color", Color) = (1,1,1,1)
 		_Emission("Emission", Float) = 1.5
 		_Speed("Speed", Float) = 20
 		_WingPower("Wing Power", Float) = 0.2
@@ -63,6 +64,7 @@ Shader "ERB/Particles/Butterfly"
 				uniform float _WingPower;
 				uniform float4 _Color;
 				uniform float _Emission;
+				uniform float4 _NewColor;
 
 				v2f vert ( appdata_t v  )
 				{
@@ -86,9 +88,12 @@ Shader "ERB/Particles/Butterfly"
 				{
 					float2 uv_MainTex = i.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 					float4 tex2DNode2 = tex2D( _MainTex, uv_MainTex );
-					float4 appendResult57 = (float4((( tex2DNode2 * _Color * i.color * _Emission )).rgb , ( tex2DNode2.a * _Color.a * i.color.a )));				
-					fixed4 col = appendResult57;
-					UNITY_APPLY_FOG(i.fogCoord, col);
+					//float4 appendResult57 = (float4((( tex2DNode2 * _Color * i.color * _Emission )).rgb , ( tex2DNode2.a * _Color.a * i.color.a )));
+					fixed4 col = (float4(((tex2DNode2 * i.color)).rgb, (tex2DNode2.a * i.color.a)));;
+					if (col.g>0.2)
+						col.rgb = tex2DNode2.rgb * _NewColor.rgb;
+
+					//UNITY_APPLY_FOG(i.fogCoord, col);
 					return col;
 				}
 				ENDCG 

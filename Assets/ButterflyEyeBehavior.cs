@@ -2,116 +2,95 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(ParticleSystem))]
 public class ButterflyEyeBehavior : MonoBehaviour
 {
-    ParticleSystem ps;
-    Renderer renderer;
-    Color[] colors;
-    ParticleSystem.TextureSheetAnimationModule animToEye;
-    ParticleSystem.NoiseModule noise;
-    ParticleSystem.Particle[] particles;
-    int numParticlesChanged = 0;
-    int frameCount = 0;
-    float timer = 0f;
-    bool allParticlesChanged = false;
-    bool playing = false;
+    Vector2 offsets;
+    float t = 0;
+    bool transformToEye;
+    bool flyingAround;
+    float speed;
+    float movingDeltaTime = 0;
+    // Range over which height varies.
+    float heightScale = 1.0f;
+
+    // Distance covered per second along X axis of Perlin plane.
+    float xScale = 0.5f;
+
     // Start is called before the first frame update
     void Start()
     {
-        //enabled = false;
-        ps = GetComponent<ParticleSystem>();
-        particles = new ParticleSystem.Particle[ps.main.maxParticles];
-        renderer = GetComponent<Renderer>();
-        colors = new[] {
-            Color.blue,
-            Color.magenta,
-            Color.red,
-            Color.green,
-            Color.yellow
-        };
-        animToEye = ps.textureSheetAnimation;
-
-        noise = ps.noise;
-        var main = ps.main;
-        var particleSystemGradient = main.startColor.gradient;
-        var randomColors = new ParticleSystem.MinMaxGradient(particleSystemGradient);
-        randomColors.mode = ParticleSystemGradientMode.RandomColor;
-        main.startColor = randomColors;
+        speed = GetComponent<Renderer>().material.GetFloat("_Speed"); ;
+        transformToEye = false;
+        flyingAround = true;
+        offsets = GetComponent<Renderer>().material.GetTextureOffset("_MainTex");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (ps == null)
+        //Debug.Log("hi");
+
+        if (transformToEye)
         {
-            enabled = false;
-            return;
+            if (t <= 15f)
+            {
+                t += Time.deltaTime * 8;
+                offsets.x = (((int)t) % 4) * 0.25f;
+                offsets.y = 0.75f - (((int)t / 4) * 0.25f);
+                GetComponent<Renderer>().material.SetTextureOffset("_MainTex", offsets);
+            }
+            else
+                StopEyeTransform();
         }
-
-        int numParticlesAlive = ps.GetParticles(particles);
-        numParticlesAlive = numParticlesAlive <= 20 ? numParticlesAlive : 20;
-
-        // Change only the particles that are alive
-        for (int i = 0; i < numParticlesAlive; i++)
+        if (flyingAround)
         {
-
-            if (particles[i].remainingLifetime <= 1f)
-            {
-                numParticlesChanged += 1;
-                particles[i].remainingLifetime = 100000f;
-
-                particles[i].velocity = Vector3.zero;
-            }
+            float height = heightScale * Mathf.PerlinNoise(Time.time * xScale, 0.0f);
+            Vector3 pos = transform.position;
+            float rand = Random.Range(0, 2);
+            if (rand == 1)
+                height = -height;
+            rand = Random.Range(0, 3);
+            if (rand==0)
+                pos.x += height;
+            if (rand == 1)
+                pos.y += height;
+            if (rand == 2)
+                pos.z += height;
+            transform.position = pos;
         }
-
-        // Apply the particle changes to the Particle System
-        ps.SetParticles(particles, numParticlesAlive);
-
-        if (numParticlesChanged == numParticlesAlive && numParticlesAlive != 0)
-        {
-            allParticlesChanged = true;
-            for (int i = 0; i < numParticlesAlive; i++)
-            {
-                particles[i].remainingLifetime = 100000f;
-
-            }
-        }
-        if (allParticlesChanged)
-        {
-            timer += Time.deltaTime;
-            noise.enabled = false;
-            renderer.material.SetFloat("_Speed", 0);
-            if (timer >= 1f && timer < 3.1f)
-            {
-                animToEye.fps = 4f;
-                animToEye.mode = ParticleSystemAnimationMode.Grid;
-
-            }
-            else if (timer >= 3.1f)
-            {
-                animToEye.fps = 0.0001f;
-                animToEye.startFrame = 1;
-                animToEye.mode = ParticleSystemAnimationMode.Sprites;
-            }
-
-        }
-
     }
 
-    public bool Playing()
+    public void StartEyeTransform()
     {
-        return playing;
-    }
-    public void Play()
-    {
-        playing = true;
-        ps.Play();
+        StopFlapping();
+        transformToEye = true;
+        flyingAround = false;
+
     }
 
-    public void Stop()
+    public void StopEyeTransform()
     {
-        playing = false;
-        ps.Stop();
+        transformToEye = false;
+        t = 0f;
     }
+    public void StopFlapping()
+    {
+        GetComponent<Renderer>().material.SetFloat("_Speed", 0f);
+    }
+
+    public void StartFlapping()
+    {
+        GetComponent<Renderer>().material.SetFloat("_Speed", speed);
+
+    }
+
+    public void PlayEffect()
+    {
+        enabled = true;
+        flyingAround = true;
+        movingDeltaTime += Time.deltaTime;
+        if (movingDeltaTime > 3f)
+            StartEyeTransform();
+    }
+
 }
