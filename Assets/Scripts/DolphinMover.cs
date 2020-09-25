@@ -20,6 +20,8 @@ public class DolphinMover : MonoBehaviour
     private Vector3 middle;
     private bool stopMoving = false;
     private Vector3 start;
+    private float fade_t = 0f;
+    private Color og_color;
     private void Awake()
     {
         myAnimator = GetComponent<Animator>();
@@ -28,6 +30,7 @@ public class DolphinMover : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        og_color = GetComponent<Renderer>().material.GetColor("Color");
 
         middle = transform.position;
         transform.Translate(new Vector3(radius, 0, 0));
@@ -115,5 +118,32 @@ public class DolphinMover : MonoBehaviour
     {
         bloomLayer.intensity.value = bloomLayer.intensity.value - 1;
         bloom--;
+    }
+    public bool PlayEffect()
+    {
+        fade_t += Time.deltaTime;
+        Color fading_color = Color.Lerp(Color.black, og_color, fade_t);
+        GetComponent<Renderer>().material.SetColor("Color", fading_color);
+        m_dolphin.SetActive(true);
+        if (fade_t >= 1f)
+        {
+            fade_t = 1f;
+            return true;
+        }
+        return false;
+    }
+    public bool StopEffect()
+    {
+        fade_t -= Time.deltaTime;
+        Color fading_color = Color.Lerp(og_color, Color.black, fade_t);
+        GetComponent<Renderer>().material.SetColor("Color", fading_color);
+        if (fade_t <= 0f)
+        {
+            m_dolphin.SetActive(false);
+            fade_t = 0f;
+            GetComponent<Renderer>().material.SetColor("Color", og_color);
+            return true;
+        }
+        return false;
     }
 }

@@ -108,11 +108,13 @@ public class TrackerHandler : MonoBehaviour
 
         // render the closest body
         Body skeleton = trackerFrameData.Bodies[closestBody];
-        //renderSkeleton(skeleton, 0);
+        renderSkeleton(skeleton, 0);
         if (trackWavingLeft(skeleton))
             return 1;
         else if (trackWavingRight(skeleton))
             return 2;
+        else if (trackHandsUp(skeleton))
+            return 3;
         else
             return 0;
     }
@@ -164,6 +166,12 @@ public class TrackerHandler : MonoBehaviour
     {
         return (skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&
                (skeleton.JointPositions3D[(int)JointId.HipRight].X < skeleton.JointPositions3D[(int)JointId.HandRight].X);
+    }
+
+    public bool trackHandsUp(Body skeleton)
+    {
+        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.Head].Y) &&
+               (skeleton.JointPositions3D[(int)JointId.HandLeft].Y < skeleton.JointPositions3D[(int)JointId.Head].Y);
     }
 
     public bool trackWavingRight(Body skeleton)
