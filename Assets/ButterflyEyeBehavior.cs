@@ -8,12 +8,9 @@ public class ButterflyEyeBehavior : MonoBehaviour
     Vector2 offsets;
     float[] t;
     float[] speedToEye;
-    bool[] transformToEye;
-    bool flyingAround;
     float[] flappingSpeed;
     float movingDeltaTime = 0;
-    Vector3 from;
-    Vector3 to;
+   
     public float minX;
     public float maxX;
     public float minY;
@@ -28,9 +25,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     private float moveToMiddleT = 0f;
     private Vector3 middle = Vector3.zero;
     private bool stopMoving = false;
-    private bool stopEffect = false;
-    private Vector3 start;
-    private bool eyeTransform = false;
+
     public GameObject[] m_allButterFlies;
     private Vector3[] oldPos;
     private Vector3[] targetPos;
@@ -45,7 +40,6 @@ public class ButterflyEyeBehavior : MonoBehaviour
         rand_t = new float[m_allButterFlies.Length];
         t = new float[m_allButterFlies.Length];
         speedToEye = new float[m_allButterFlies.Length];
-        transformToEye = new bool[m_allButterFlies.Length];
         flappingSpeed = new float[m_allButterFlies.Length];
         for (int i = 0; i < flyingT.Length; i++)
         {
@@ -53,7 +47,6 @@ public class ButterflyEyeBehavior : MonoBehaviour
             rand_t[i] = 0.0f;
             t[i] = 0.0f;
             speedToEye[i] = Random.Range(0, 5);
-            transformToEye[i] = true;
             flappingSpeed[i] = m_allButterFlies[i].GetComponent<Renderer>().material.GetFloat("_Speed");
 
         }
@@ -63,10 +56,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        flyingAround = true;
-        offsets = GetComponentInChildren<Renderer>().material.GetTextureOffset("_MainTex");
 
-        from = transform.position;
     }
 
     // Update is called once per frame
@@ -80,11 +70,11 @@ public class ButterflyEyeBehavior : MonoBehaviour
         StopFlapping();
         for (int i = 0; i < m_allButterFlies.Length; i++)
         {
-            if (t[i] <= 15f && transformToEye[i] && speedToEye[i] <= 0)
+            if (t[i] <= 35f && speedToEye[i] <= 0)
             {
-                t[i] += Time.deltaTime * 8;
-                offsets.x = (((int)t[i]) % 4) * 0.25f;
-                offsets.y = 0.75f - (((int)t[i] / 4) * 0.25f);
+                t[i] += Time.deltaTime * 36;
+                offsets.x = (((int)t[i]) % 6) * (1f / 6f);
+                offsets.y = (5f / 6f) - (((int)t[i] / 6) * (1f / 6f));
                 m_allButterFlies[i].GetComponent<Renderer>().material.SetTextureOffset("_MainTex", offsets);
             }
             else
@@ -92,11 +82,6 @@ public class ButterflyEyeBehavior : MonoBehaviour
         }
     }
 
-    public void StopEyeTransform(int index)
-    {
-        transformToEye[index] = false;
-        t[index] = 0f;
-    }
     public void StopFlapping()
     {
         for (int i = 0; i < m_allButterFlies.Length; i++)
@@ -116,7 +101,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     public void PlayEffect()
     {
 
-        if (movingDeltaTime > 3f && !eyeTransform)
+        if (movingDeltaTime > 3f)
         {
             StartEyeTransform();
             for (int i = 0; i < m_allButterFlies.Length; i++)
@@ -124,7 +109,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
                 targetPos[i] = m_allButterFlies[i].transform.position;
             }
         }
-        else if(!eyeTransform)
+        else
         {
             movingDeltaTime += Time.deltaTime;
 
@@ -140,16 +125,15 @@ public class ButterflyEyeBehavior : MonoBehaviour
                 }
                 Vector3 pos = Vector3.Lerp(oldPos[i], targetPos[i], flyingT[i]);
                 m_allButterFlies[i].transform.position = pos;
-                flyingT[i] += rand_t[i];
-                if (flyingT[i] >= 1f)
-                    flyingT[i] = 0.0f;
+                if(flyingT[i] < 1f)
+                    flyingT[i] += rand_t[i];
+
             }
         }
     }
     public void SetActive(bool active)
     {
         m_butterfly.SetActive(active);
-        stopEffect = !active;
 
     }
     public void SetBloom(float value)
@@ -175,7 +159,6 @@ public class ButterflyEyeBehavior : MonoBehaviour
     }
     public void StopEffect()
     {
-        stopEffect = true;
         if (!stopMoving)
         {
             if (!moveToMIddle)
@@ -183,9 +166,9 @@ public class ButterflyEyeBehavior : MonoBehaviour
                 {
                     if (t[i] >= 0f)
                     {
-                        t[i] -= Time.deltaTime * 8;
-                        offsets.x = (((int)t[i]) % 4) * 0.25f;
-                        offsets.y = 0.75f - (((int)t[i] / 4) * 0.25f);
+                        t[i] -= Time.deltaTime * 36;
+                        offsets.x = (((int)t[i]) % 6) * (1f/6f);
+                        offsets.y = (5f / 6f) - (((int)t[i] / 6) * (1f / 6f));
                         m_allButterFlies[i].GetComponent<Renderer>().material.SetTextureOffset("_MainTex", offsets);
                     }
 
