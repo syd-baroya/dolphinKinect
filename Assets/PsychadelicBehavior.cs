@@ -10,7 +10,7 @@ public class PsychadelicBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Renderer>().material.SetColor("Color", Color.black);
+        GetComponent<Renderer>().material.SetColor("_Color", Color.black);
     }
 
     // Update is called once per frame
@@ -21,11 +21,14 @@ public class PsychadelicBehavior : MonoBehaviour
 
     public bool PlayEffect()
     {
-        fade_t += Time.deltaTime;
-        Color fading_color = Color.Lerp(Color.black, Color.white, fade_t);
-        GetComponent<Renderer>().material.SetColor("Color", fading_color);
-        m_object.SetActive(true);
-        if(fade_t >= 1f)
+        if (fade_t < 1f)
+        {
+            fade_t += Time.deltaTime * 0.5f;
+            Color fading_color = Color.Lerp(Color.black, Color.white, fade_t);
+            GetComponent<Renderer>().material.SetColor("_Color", fading_color);
+            m_object.SetActive(true);
+        }
+        else
         {
             fade_t = 1f;
             return true;
@@ -34,10 +37,13 @@ public class PsychadelicBehavior : MonoBehaviour
     }
     public bool StopEffect()
     {
-        fade_t -= Time.deltaTime;
-        Color fading_color = Color.Lerp(Color.white, Color.black, fade_t);
-        GetComponent<Renderer>().material.SetColor("Color", fading_color);
-        if (fade_t <= 0f)
+        if (fade_t > 0f)
+        {
+            fade_t -= Time.deltaTime * 0.5f;
+            Color fading_color = Color.Lerp(Color.white, Color.black, 1.0f - fade_t);
+            GetComponent<Renderer>().material.SetColor("_Color", fading_color);
+        }
+        else
         {
             m_object.SetActive(false);
             fade_t = 0f;

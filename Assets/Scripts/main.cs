@@ -81,12 +81,14 @@ public class main : MonoBehaviour
 
                             if (waving == 1)
                             {
+                                Debug.Log("waving left");
                                 currSkinIndex--;
                                 if (currSkinIndex < 0)
                                     currSkinIndex = maxSkinEffects - 1;
                             }
                             else if (waving == 2)
                             {
+                                Debug.Log("waving right");
                                 currSkinIndex++;
                                 if (currSkinIndex >= maxSkinEffects)
                                     currSkinIndex = 0;
@@ -94,6 +96,8 @@ public class main : MonoBehaviour
 
                             else
                             {
+                                Debug.Log("arms up");
+
                                 currAnimIndex++;
                                 if (currAnimIndex >= maxAnimEffects)
                                     currAnimIndex = 0;
@@ -103,7 +107,6 @@ public class main : MonoBehaviour
                         else
                         {
                             waveStarted = false;
-                            bright_full = false;
 
                         }
                         effectTimer = 0f;
@@ -111,58 +114,40 @@ public class main : MonoBehaviour
                 }
             }
         }
-        if (!waveStarted)
+        if(!waveStarted)
         {
+            bool canPlay = false;
+            if (drawPsychadelic)
+                canPlay = m_psychadelic.StopEffect();
+            if (drawChameleon)
+                canPlay = m_chameleon.StopEffect();
+            if (drawLeopard)
+                canPlay = m_leopard.StopEffect();
+            if (drawEyes)
+                canPlay = StopEyesToDolphin();
             if (drawButterflies)
+                canPlay = StopButterfliesToDolphin();
+            if (canPlay || drawDolphin)
             {
-                if (!alreadyTrackedPos)
+                canPlay = false;
+                if (drawPsychadelic || drawChameleon || drawLeopard)
+                    canPlay = m_dolphin.StartFadeIn();
+                if (canPlay || drawButterflies || drawEyes || drawDolphin)
                 {
-                    m_butterflies.SetCurrPosition();
-                    alreadyTrackedPos = true;
-                }
-                m_butterflies.IncrBloom();
-
-                if (!m_butterflies.getStopMoving())
-                    m_butterflies.StopEffect();
-
-
-                else if (m_butterflies.GetBloom() >= 90)
-                {
-                    alreadyTrackedPos = false;
-                    m_dolphin.SetBloom(80);
-                    drawDolphin = true;
-                    drawButterflies = false;
-                    m_dolphin.SetActive(true);
-                    m_butterflies.SetActive(false);
-
-                }
-            }
-            else if (drawEyes)
-            {
-                if (!m_eyeButterflies.getStopMoving())
-                    m_eyeButterflies.StopEffect();
-                if(m_eyeButterflies.getMoveToMiddle())
-                    m_eyeButterflies.IncrBloom();
-
-                if (m_eyeButterflies.GetBloom() >= 90)
-                {
-                    m_dolphin.SetBloom(80);
-                    m_eyeButterflies.setMoveToMiddle(false);
+                    if (m_dolphin.GetBloom() > 0)
+                        m_dolphin.DecrBloom();
+                    m_dolphin.swimAround();
+                    drawLeopard = true;
+                    drawPsychadelic = false;
+                    drawChameleon = false;
                     drawDolphin = true;
                     drawEyes = false;
-                    m_dolphin.SetActive(true);
-                    m_eyeButterflies.SetActive(false);
-
+                    drawButterflies = false;
                 }
-            }
-            if (drawDolphin)
-            {
-                if (m_dolphin.GetBloom() > 0)
-                    m_dolphin.DecrBloom();
-                    m_dolphin.swimAround();
             }
 
         }
+
         else
         {
 
@@ -205,20 +190,100 @@ public class main : MonoBehaviour
 
     }
 
+    private bool StopEyesToDolphin()
+    {
+        if (!m_eyeButterflies.getStopMoving())
+            m_eyeButterflies.StopEffect();
+        if (m_eyeButterflies.getMoveToMiddle())
+            m_eyeButterflies.IncrBloom();
+
+        if (m_eyeButterflies.GetBloom() >= 90)
+        {
+            m_dolphin.SetBloom(80);
+            m_eyeButterflies.setMoveToMiddle(false);
+            m_dolphin.SetActive(true);
+            m_eyeButterflies.SetActive(false);
+            return true;
+        }
+        return false;
+    }
+
+    private bool StopEyesEE()
+    {
+        if (!m_eyeButterflies.getStopMoving())
+            m_eyeButterflies.StopEffect();
+        if (m_eyeButterflies.getMoveToMiddle())
+            m_eyeButterflies.IncrBloom();
+
+        if (m_eyeButterflies.GetBloom() >= 90)
+        {
+            m_eyeButterflies.setMoveToMiddle(false);
+            m_eyeButterflies.SetActive(false);
+            return true;
+        }
+        return false;
+    }
+
+    private bool StopButterfliesToDolphin()
+    {
+        if (!alreadyTrackedPos)
+        {
+            m_butterflies.SetCurrPosition();
+            alreadyTrackedPos = true;
+        }
+        m_butterflies.IncrBloom();
+
+        if (!m_butterflies.getStopMoving())
+            m_butterflies.StopEffect();
+
+
+        else if (m_butterflies.GetBloom() >= 90)
+        {
+            alreadyTrackedPos = false;
+            m_dolphin.SetBloom(80);
+            m_dolphin.SetActive(true);
+            m_butterflies.SetActive(false);
+            return true;
+        }
+        return false;
+    }
+
+    private bool StopButterfliesEE()
+    {
+        if (!alreadyTrackedPos)
+        {
+            m_butterflies.SetCurrPosition();
+            alreadyTrackedPos = true;
+        }
+        m_butterflies.IncrBloom();
+
+        if (!m_butterflies.getStopMoving())
+            m_butterflies.StopEffect();
+
+
+        else if (m_butterflies.GetBloom() >= 90)
+        {
+            alreadyTrackedPos = false;
+            m_butterflies.SetActive(false);
+            return true;
+        }
+        return false;
+    }
+
     private void playLeopard()
     {
-        bool canPlay = false ;
-        if(drawPsychadelic)
+        bool canPlay = false;
+        if (drawPsychadelic)
             canPlay = m_psychadelic.StopEffect();
-        if (drawChameleon)
+        else if (drawChameleon)
             canPlay = m_chameleon.StopEffect();
-        if (drawDolphin)
-            m_dolphin.StopEffect();
-        if (drawEyes)
-
-        if (drawButterflies)
-
-        if (canPlay)
+        else if (drawDolphin)
+            canPlay = m_dolphin.StartFadeOut();
+        else if (drawEyes)
+            canPlay = StopEyesEE();
+        else if (drawButterflies)
+            canPlay = StopButterfliesEE();
+        if (canPlay || drawLeopard)
         {
             m_leopard.PlayEffect();
             drawLeopard = true;
@@ -233,90 +298,167 @@ public class main : MonoBehaviour
 
     private void playChameleon()
     {
-        bool canPlay;
-        if (waving == 1)
-            canPlay =  m_psychadelic.StopEffect();
-        else
+        bool canPlay = false;
+        if (drawPsychadelic)
+            canPlay = m_psychadelic.StopEffect();
+        else if (drawLeopard)
             canPlay = m_leopard.StopEffect();
-        if (canPlay)
+        else if (drawDolphin)
+            canPlay = m_dolphin.StartFadeOut();
+        else if (drawEyes)
+            canPlay = StopEyesEE();
+        else if (drawButterflies)
+            canPlay = StopButterfliesEE();
+        if (canPlay || drawChameleon)
+        {
             m_chameleon.PlayEffect();
+            drawLeopard = false;
+            drawPsychadelic = false;
+            drawChameleon = true;
+            drawDolphin = false;
+            drawEyes = false;
+            drawButterflies = false;
+        }
     }
 
     private void playPsychadelic()
     {
-        bool canPlay;
-        if (waving == 1)
+        bool canPlay = false;
+        if (drawChameleon)
             canPlay = m_chameleon.StopEffect();
-        else
+        else if (drawLeopard)
             canPlay = m_leopard.StopEffect();
-        if (canPlay) 
+        else if (drawDolphin)
+            canPlay = m_dolphin.StartFadeOut();
+        else if (drawEyes)
+            canPlay = StopEyesEE();
+        else if (drawButterflies)
+            canPlay = StopButterfliesEE();
+        if (canPlay || drawPsychadelic)
+        {
             m_psychadelic.PlayEffect();
+            drawLeopard = false;
+            drawPsychadelic = true;
+            drawChameleon = false;
+            drawDolphin = false;
+            drawEyes = false;
+            drawButterflies = false;
+        }
     }
 
     private void drawEyeButterflies()
     {
 
-        if (!m_dolphin.getStopMoving())
-            m_dolphin.StartingWave();
-
-        else
+        bool canPlay = false;
+        if (drawChameleon)
+            canPlay = m_chameleon.StopEffect();
+        else if (drawLeopard)
+            canPlay = m_leopard.StopEffect();
+        else if (drawPsychadelic)
+            canPlay = m_psychadelic.StopEffect();
+        else if (drawDolphin)
         {
-            if (m_dolphin.GetBloom() < 80 && !bright_full)
+            if (!m_dolphin.getStopMoving())
+                m_dolphin.StartingWave();
+
+            else
             {
-                m_dolphin.IncrBloom();
+                if (m_dolphin.GetBloom() < 80)
+                {
+                    m_dolphin.IncrBloom();
+                }
+                else
+                {
+                    m_dolphin.SetActive(false);
+                    canPlay = true;
+                }
+
+            }
+        }
+        else if (drawButterflies)
+        {
+            if (m_butterflies.GetBloom() < 90)
+            {
+                m_butterflies.IncrBloom();
             }
             else
             {
-                if (drawDolphin)
-                {
-                    m_dolphin.SetActive(false);
-                    drawDolphin = false;
-                }
-                if (!drawEyes)
-                {
-                    m_eyeButterflies.SetActive(true);
-                    drawEyes = true;
-                }
-                bright_full = true;
-                if (m_eyeButterflies.GetBloom() > 0f)
-                    m_eyeButterflies.DecrBloom();
-                m_eyeButterflies.PlayEffect();
+                m_butterflies.SetActive(false);
+                canPlay = true;
             }
-
         }
+        if (canPlay || drawEyes)
+        {
+            m_eyeButterflies.SetActive(true);
+            if (m_eyeButterflies.GetBloom() > 0f)
+                m_eyeButterflies.DecrBloom();
+            m_eyeButterflies.PlayEffect();
+            drawLeopard = false;
+            drawPsychadelic = false;
+            drawChameleon = false;
+            drawDolphin = false;
+            drawEyes = true;
+            drawButterflies = false;
+        }
+
+
+
     }
 
     private void drawParticleButterflies()
     {
 
-        if (!m_dolphin.getStopMoving())
-            m_dolphin.StartingWave();
-
-        else
+        bool canPlay = false;
+        if (drawChameleon)
+            canPlay = m_chameleon.StopEffect();
+        else if (drawLeopard)
+            canPlay = m_leopard.StopEffect();
+        else if (drawPsychadelic)
+            canPlay = m_psychadelic.StopEffect();
+        else if (drawDolphin)
         {
-            if (m_dolphin.GetBloom() < 80 && !bright_full)
+            if (!m_dolphin.getStopMoving())
+                m_dolphin.StartingWave();
+
+            else
             {
-                m_dolphin.IncrBloom();
+                if (m_dolphin.GetBloom() < 80)
+                {
+                    m_dolphin.IncrBloom();
+                }
+                else
+                {
+                    m_dolphin.SetActive(false);
+                    canPlay = true;
+                }
+
+            }
+        }
+        else if (drawEyes)
+        {
+            if (m_eyeButterflies.GetBloom() < 90)
+            {
+                m_eyeButterflies.IncrBloom();
             }
             else
             {
-                if (drawDolphin)
-                {
-                    m_dolphin.SetActive(false);
-                    drawDolphin = false;
-                }
-                if (!drawButterflies)
-                {
-                    m_butterflies.SetActive(true);
-                    drawButterflies = true;
-                }
-                bright_full = true;
-                if (m_butterflies.GetBloom() > 0f)
-                    m_butterflies.DecrBloom();
-
+                m_eyeButterflies.SetActive(false);
+                canPlay = true;
             }
-
+        }    
+        if (canPlay || drawButterflies)
+        {
+            m_butterflies.SetActive(true);
+            if (m_butterflies.GetBloom() > 0f)
+                m_butterflies.DecrBloom();
+            drawLeopard = false;
+            drawPsychadelic = false;
+            drawChameleon = false;
+            drawDolphin = false;
+            drawEyes = false;
+            drawButterflies = true;
         }
+       
     }
 
     void OnDestroy()

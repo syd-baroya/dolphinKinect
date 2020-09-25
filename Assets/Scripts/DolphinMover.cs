@@ -30,7 +30,7 @@ public class DolphinMover : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        og_color = GetComponent<Renderer>().material.GetColor("Color");
+        og_color = GetComponentInChildren<Renderer>().material.GetColor("_Color");
 
         middle = transform.position;
         transform.Translate(new Vector3(radius, 0, 0));
@@ -119,29 +119,35 @@ public class DolphinMover : MonoBehaviour
         bloomLayer.intensity.value = bloomLayer.intensity.value - 1;
         bloom--;
     }
-    public bool PlayEffect()
+    public bool StartFadeIn()
     {
-        fade_t += Time.deltaTime;
-        Color fading_color = Color.Lerp(Color.black, og_color, fade_t);
-        GetComponent<Renderer>().material.SetColor("Color", fading_color);
-        m_dolphin.SetActive(true);
-        if (fade_t >= 1f)
+        if (fade_t < 1f)
+        {
+            fade_t += Time.deltaTime * 0.5f;
+            Color fading_color = Color.Lerp(Color.black, og_color, fade_t);
+            GetComponentInChildren<Renderer>().material.SetColor("_Color", fading_color);
+            m_dolphin.SetActive(true);
+        }
+       else
         {
             fade_t = 1f;
             return true;
         }
         return false;
     }
-    public bool StopEffect()
+    public bool StartFadeOut()
     {
-        fade_t -= Time.deltaTime;
-        Color fading_color = Color.Lerp(og_color, Color.black, fade_t);
-        GetComponent<Renderer>().material.SetColor("Color", fading_color);
-        if (fade_t <= 0f)
+        if (fade_t > 0f)
+        {
+            fade_t -= Time.deltaTime * 0.5f;
+            Color fading_color = Color.Lerp(og_color, Color.black, 1.0f - fade_t);
+            GetComponentInChildren<Renderer>().material.SetColor("_Color", fading_color);
+        }
+        else
         {
             m_dolphin.SetActive(false);
             fade_t = 0f;
-            GetComponent<Renderer>().material.SetColor("Color", og_color);
+            GetComponentInChildren<Renderer>().material.SetColor("_Color", og_color);
             return true;
         }
         return false;

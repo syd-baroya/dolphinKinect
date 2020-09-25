@@ -108,7 +108,7 @@ public class TrackerHandler : MonoBehaviour
 
         // render the closest body
         Body skeleton = trackerFrameData.Bodies[closestBody];
-        renderSkeleton(skeleton, 0);
+        //renderSkeleton(skeleton, 0);
         if (trackWavingLeft(skeleton))
             return 1;
         else if (trackWavingRight(skeleton))
