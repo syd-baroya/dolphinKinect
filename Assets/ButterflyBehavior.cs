@@ -140,16 +140,26 @@ public class ButterflyBehavior : MonoBehaviour
     public void StopEffect()
     {
         stopEffect = true;
+        texChanged = false;
         if (!stopMoving)
         {
-            moveToMiddleT += Time.deltaTime;
+            moveToMiddleT += Time.deltaTime*0.5f;
             for (int i = 0; i < m_allButterFlies.Length; i++)
             {
 
-                transform.position = Vector3.Lerp(oldPos[i], middle, moveToMiddleT);
+                m_allButterFlies[i].transform.position = Vector3.Lerp(targetPos[i], middle, moveToMiddleT);
             }
             if (moveToMiddleT >= 1f)
                 stopMoving = true;
+        }
+    }
+
+    public void SetCurrPosition()
+    {
+        for (int i = 0; i < m_allButterFlies.Length; i++)
+        {
+
+            targetPos[i] = m_allButterFlies[i].transform.position;
         }
     }
 

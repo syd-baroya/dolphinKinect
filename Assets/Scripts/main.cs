@@ -9,12 +9,12 @@ public class main : MonoBehaviour
     public DolphinMover m_dolphin;
     public CameraBehavior m_camera;
     public ButterflyBehavior m_butterflies;
-    public EyeEffectBehavior m_eyeButterflies;
+    public ButterflyEyeBehavior m_eyeButterflies;
     private bool bright_full = false;
     private bool drawDolphin = true;
     private bool drawButterflies = false;
     private bool drawEyes = false;
-
+    private bool alreadyTrackedPos = false;
     //public GameObject m_water;
     //public WaterLightBehavior m_waterlight;
     //public SunLightBehavior m_sunlight;
@@ -22,6 +22,7 @@ public class main : MonoBehaviour
     private BackgroundDataProvider m_backgroundDataProvider;
     public BackgroundData m_lastFrameData = new BackgroundData();
     private int waving = 0;
+    private bool justStarted = true;
     //private float speed = 0.0025f;
     //private float t = 0.0f;
     //private float level_out_t = 0.0f;
@@ -69,11 +70,7 @@ public class main : MonoBehaviour
                     else
                     {
                         waveStarted = false;
-                        m_dolphin.SetActive(true);
-                        m_butterflies.SetActive(false);
-                        m_eyeButterflies.SetActive(false);
                         bright_full = false;
-                        drawDolphin = true;
 
                     }
                 }
@@ -83,38 +80,60 @@ public class main : MonoBehaviour
         {
             if (drawButterflies)
             {
+                if (!alreadyTrackedPos)
+                {
+                    m_butterflies.SetCurrPosition();
+                    alreadyTrackedPos = true;
+                }
+                m_butterflies.IncrBloom();
 
                 if (!m_butterflies.getStopMoving())
                     m_butterflies.StopEffect();
-                else
-                    m_butterflies.IncrBloom();
 
-                drawButterflies = false;
-                if (m_butterflies.GetBloom() >= 80)
+
+                else if (m_butterflies.GetBloom() >= 90)
+                {
+                    alreadyTrackedPos = false;
+                    m_dolphin.SetBloom(80);
                     drawDolphin = true;
+                    drawButterflies = false;
+                    m_dolphin.SetActive(true);
+                    m_butterflies.SetActive(false);
+
+                }
             }
             else if (drawEyes)
             {
-
                 if (!m_eyeButterflies.getStopMoving())
                     m_eyeButterflies.StopEffect();
-                else
+                if(m_eyeButterflies.getMoveToMiddle())
                     m_eyeButterflies.IncrBloom();
 
-                drawEyes = false;
-                if (m_eyeButterflies.GetBloom() >= 80)
+                if (m_eyeButterflies.GetBloom() >= 90)
+                {
+                    m_dolphin.SetBloom(80);
+                    m_eyeButterflies.setMoveToMiddle(false);
                     drawDolphin = true;
+                    drawEyes = false;
+                    m_dolphin.SetActive(true);
+                    m_eyeButterflies.SetActive(false);
+
+                }
             }
             if (drawDolphin)
             {
                 if (m_dolphin.GetBloom() > 0)
                     m_dolphin.DecrBloom();
-                m_dolphin.swimAround();
+                //if(!justStarted)
+                //    m_dolphin.moveToCircle();
+                //if(m_dolphin.getAtCircle())
+                    m_dolphin.swimAround();
             }
 
         }
         else
         {
+            justStarted = false;
             if (waving == 1)
             {
 
@@ -140,7 +159,8 @@ public class main : MonoBehaviour
                             drawButterflies = true;
                         }
                         bright_full = true;
-                        m_butterflies.DecrBloom();
+                        if (m_butterflies.GetBloom() > 0f)
+                            m_butterflies.DecrBloom();
 
                     }
 
@@ -171,10 +191,9 @@ public class main : MonoBehaviour
                             drawEyes = true;
                         }
                         bright_full = true;
-                        if(m_eyeButterflies.GetBloom()>0)
+                        if(m_eyeButterflies.GetBloom()>0f)
                             m_eyeButterflies.DecrBloom();
-                        else
-                            m_eyeButterflies.PlayEffect();
+                        m_eyeButterflies.PlayEffect();
                     }
 
                 }
