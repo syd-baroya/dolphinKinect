@@ -164,7 +164,7 @@ public class TrackerHandler : MonoBehaviour
 
     public bool trackWavingLeft(Body skeleton)
     {
-        return /*(skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&*/
+        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&
                (skeleton.JointPositions3D[(int)JointId.ShoulderRight].X < skeleton.JointPositions3D[(int)JointId.HandRight].X);
     }
 
@@ -176,7 +176,7 @@ public class TrackerHandler : MonoBehaviour
 
     public bool trackWavingRight(Body skeleton)
     {
-        return /*(skeleton.JointPositions3D[(int)JointId.ElbowLeft].Y < skeleton.JointPositions3D[(int)JointId.ShoulderLeft].Y) && */
+        return (skeleton.JointPositions3D[(int)JointId.HandLeft].Y < skeleton.JointPositions3D[(int)JointId.ShoulderLeft].Y) &&
                 (skeleton.JointPositions3D[(int)JointId.ShoulderLeft].X > skeleton.JointPositions3D[(int)JointId.HandLeft].X);
     }
 

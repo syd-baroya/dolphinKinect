@@ -47,13 +47,6 @@ public class main : MonoBehaviour
         m_leopard.SetActive(false);
         m_chameleon.SetActive(false);
         m_psychadelic.SetActive(false);
-
-        //skinEffectStates = new int[3];
-        //for (int i = 0; i < skinEffectStates.Length; i++)
-        //    skinEffectStates[i] = i;
-        //animationEffectStates = new int[2];
-        //for (int i = 0; i < animationEffectStates.Length; i++)
-        //    animationEffectStates[i] = i;
         currAnimIndex = -1;
         currSkinIndex = -1;
         maxAnimEffects = 2;
@@ -77,9 +70,9 @@ public class main : MonoBehaviour
                     if (new_wave != waving)
                     {
 
-                        if (effectTimer >= 5f && new_wave < 3 && new_wave > 0)
+                        if (new_wave < 3 && ((effectTimer >= 5f && waving != 3) || (effectTimer >= 20f && waving == 3) || (waving == 0)))
                         {
-                           
+
                             waveStarted = true;
 
                             if (waving == 1)
@@ -89,7 +82,7 @@ public class main : MonoBehaviour
                                 if (currSkinIndex < 0)
                                     currSkinIndex = maxSkinEffects - 1;
                             }
-                            else 
+                            else
                             {
                                 Debug.Log("waving right");
                                 currSkinIndex++;
@@ -98,9 +91,10 @@ public class main : MonoBehaviour
                             }
 
                             effectTimer = 0f;
+                            waving = new_wave;
 
                         }
-                        else if (new_wave == 3 && (effectTimer >= 10f || waving==0))
+                        else if (new_wave == 3 && ((waving < 3 && effectTimer >= 5f) || (waving == 3 && effectTimer >= 20f) || (waving == 0)))
                         {
                             waveStarted = true;
 
@@ -111,16 +105,28 @@ public class main : MonoBehaviour
                                 currAnimIndex = 0;
 
                             effectTimer = 0f;
+                            waving = new_wave;
 
                         }
-                        else
+                        else if (new_wave == 0 && ((waving == 3 && effectTimer >= 20f) || (waving < 3 && effectTimer >= 5f)))
                         {
+                            Debug.Log("arms down");
                             waveStarted = false;
+                            effectTimer = 0f;
+                            waving = new_wave;
 
                         }
-                        waving = new_wave;
+
 
                     }
+                    else if (waving == 0)
+                        effectTimer = 0;
+                }
+                else if ((effectTimer >= 5f && waving != 3) || (effectTimer >= 20f && waving == 3))
+                {
+                    waving = 0;
+                    waveStarted = false;
+                    effectTimer = 0f;
                 }
             }
         }
@@ -207,10 +213,11 @@ public class main : MonoBehaviour
         if (m_eyeButterflies.getMoveToMiddle())
             m_eyeButterflies.IncrBloom();
 
-        if (m_eyeButterflies.GetBloom() >= 90)
+        if (m_eyeButterflies.GetBloom() >= 110)
         {
             m_dolphin.SetBloom(80);
             m_eyeButterflies.setMoveToMiddle(false);
+            m_eyeButterflies.setStopMoving(false);
             m_dolphin.SetActive(true);
             m_eyeButterflies.SetActive(false);
             return true;
@@ -225,9 +232,10 @@ public class main : MonoBehaviour
         if (m_eyeButterflies.getMoveToMiddle())
             m_eyeButterflies.IncrBloom();
 
-        if (m_eyeButterflies.GetBloom() >= 90)
+        if (m_eyeButterflies.GetBloom() >= 110)
         {
             m_eyeButterflies.setMoveToMiddle(false);
+            m_eyeButterflies.setStopMoving(false);
             m_eyeButterflies.SetActive(false);
             return true;
         }
@@ -247,7 +255,7 @@ public class main : MonoBehaviour
             m_butterflies.StopEffect();
 
 
-        else if (m_butterflies.GetBloom() >= 90)
+        else if (m_butterflies.GetBloom() >= 110)
         {
             alreadyTrackedPos = false;
             m_dolphin.SetBloom(80);
@@ -271,7 +279,7 @@ public class main : MonoBehaviour
             m_butterflies.StopEffect();
 
 
-        else if (m_butterflies.GetBloom() >= 90)
+        else if (m_butterflies.GetBloom() >= 110)
         {
             alreadyTrackedPos = false;
             m_butterflies.SetActive(false);

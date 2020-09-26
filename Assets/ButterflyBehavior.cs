@@ -26,7 +26,7 @@ public class ButterflyBehavior : MonoBehaviour
     public Gradient startGradient;
     private Gradient[] endGradient;
     private float moveToMiddleT = 0f;
-    private Vector3 middle = Vector3.zero;
+    private Vector3 middle;
     private bool stopMoving = false;
     private bool stopEffect = false;
     // Start is called before the first frame update
@@ -63,6 +63,7 @@ public class ButterflyBehavior : MonoBehaviour
             endGradient[i] = col.color.gradient;
             col.color = startGradient;
         }
+        middle = transform.position;
     }
 
 
