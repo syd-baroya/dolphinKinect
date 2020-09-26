@@ -13,7 +13,7 @@ public class main : MonoBehaviour
     public LeopardBehavior m_leopard;
     public ChameleonBehavior m_chameleon;
     public PsychadelicBehavior m_psychadelic;
-
+    public ButterflyStrip m_butterflyStrip;
     private int currSkinIndex;
     private int maxSkinEffects;
     private int currAnimIndex;
@@ -25,6 +25,7 @@ public class main : MonoBehaviour
     private bool drawLeopard = false;
     private bool drawChameleon = false;
     private bool drawPsychadelic = false;
+    private bool drawStrip = false;
     private bool alreadyTrackedPos = false;
     private BackgroundDataProvider m_backgroundDataProvider;
     public BackgroundData m_lastFrameData = new BackgroundData();
@@ -47,10 +48,11 @@ public class main : MonoBehaviour
         m_leopard.SetActive(false);
         m_chameleon.SetActive(false);
         m_psychadelic.SetActive(false);
+        m_butterflyStrip.SetActive(false);
         currAnimIndex = -1;
         currSkinIndex = -1;
         maxAnimEffects = 2;
-        maxSkinEffects = 3;
+        maxSkinEffects = 4;
     }
 
     void Update()
@@ -69,7 +71,8 @@ public class main : MonoBehaviour
 
                     if (new_wave != waving)
                     {
-
+                        //if (waving == 0)
+                        //    effectTimer = 0;
                         if (new_wave < 3 && ((effectTimer >= 5f && waving != 3) || (effectTimer >= 20f && waving == 3) || (waving == 0)))
                         {
 
@@ -119,8 +122,7 @@ public class main : MonoBehaviour
 
 
                     }
-                    else if (waving == 0)
-                        effectTimer = 0;
+
                 }
                 else if ((effectTimer >= 5f && waving != 3) || (effectTimer >= 20f && waving == 3))
                 {
@@ -135,6 +137,8 @@ public class main : MonoBehaviour
             bool canPlay = false;
             if (drawPsychadelic)
                 canPlay = m_psychadelic.StopEffect();
+            if (drawStrip)
+                canPlay = m_butterflyStrip.StopEffect();
             if (drawChameleon)
                 canPlay = m_chameleon.StopEffect();
             if (drawLeopard)
@@ -146,7 +150,7 @@ public class main : MonoBehaviour
             if (canPlay || drawDolphin)
             {
                 canPlay = false;
-                if (drawPsychadelic || drawChameleon || drawLeopard)
+                if (drawPsychadelic || drawChameleon || drawLeopard || drawStrip)
                     canPlay = m_dolphin.StartFadeIn();
                 if (canPlay || drawButterflies || drawEyes || drawDolphin)
                 {
@@ -155,6 +159,7 @@ public class main : MonoBehaviour
                     m_dolphin.swimAround();
                     drawLeopard = false;
                     drawPsychadelic = false;
+                    drawStrip = false;
                     drawChameleon = false;
                     drawDolphin = true;
                     drawEyes = false;
@@ -179,6 +184,9 @@ public class main : MonoBehaviour
                         break;
                     case 2:
                         playPsychadelic();
+                        break;
+                    case 3:
+                        playStrip();
                         break;
                 }
 
@@ -293,6 +301,8 @@ public class main : MonoBehaviour
         bool canPlay = false;
         if (drawPsychadelic)
             canPlay = m_psychadelic.StopEffect();
+        if (drawStrip)
+            canPlay = m_butterflyStrip.StopEffect();
         else if (drawChameleon)
             canPlay = m_chameleon.StopEffect();
         else if (drawDolphin)
@@ -305,6 +315,7 @@ public class main : MonoBehaviour
         {
             m_leopard.PlayEffect();
             drawLeopard = true;
+            drawStrip = false;
             drawPsychadelic = false;
             drawChameleon = false;
             drawDolphin = false;
@@ -319,6 +330,8 @@ public class main : MonoBehaviour
         bool canPlay = false;
         if (drawPsychadelic)
             canPlay = m_psychadelic.StopEffect();
+        if (drawStrip)
+            canPlay = m_butterflyStrip.StopEffect();
         else if (drawLeopard)
             canPlay = m_leopard.StopEffect();
         else if (drawDolphin)
@@ -331,6 +344,7 @@ public class main : MonoBehaviour
         {
             m_chameleon.PlayEffect();
             drawLeopard = false;
+            drawStrip = false;
             drawPsychadelic = false;
             drawChameleon = true;
             drawDolphin = false;
@@ -342,7 +356,9 @@ public class main : MonoBehaviour
     private void playPsychadelic()
     {
         bool canPlay = false;
-        if (drawChameleon)
+        if (drawStrip)
+            canPlay = m_butterflyStrip.StopEffect();
+        else if (drawChameleon)
             canPlay = m_chameleon.StopEffect();
         else if (drawLeopard)
             canPlay = m_leopard.StopEffect();
@@ -356,7 +372,35 @@ public class main : MonoBehaviour
         {
             m_psychadelic.PlayEffect();
             drawLeopard = false;
+            drawStrip = false;
             drawPsychadelic = true;
+            drawChameleon = false;
+            drawDolphin = false;
+            drawEyes = false;
+            drawButterflies = false;
+        }
+    }
+    private void playStrip()
+    {
+        bool canPlay = false;
+        if (drawChameleon)
+            canPlay = m_chameleon.StopEffect();
+        else if (drawPsychadelic)
+            canPlay = m_psychadelic.StopEffect();
+        else if (drawLeopard)
+            canPlay = m_leopard.StopEffect();
+        else if (drawDolphin)
+            canPlay = m_dolphin.StartFadeOut();
+        else if (drawEyes)
+            canPlay = StopEyesEE();
+        else if (drawButterflies)
+            canPlay = StopButterfliesEE();
+        if (canPlay || drawStrip)
+        {
+            m_butterflyStrip.PlayEffect();
+            drawLeopard = false;
+            drawStrip = true;
+            drawPsychadelic = false;
             drawChameleon = false;
             drawDolphin = false;
             drawEyes = false;
@@ -374,6 +418,8 @@ public class main : MonoBehaviour
             canPlay = m_leopard.StopEffect();
         else if (drawPsychadelic)
             canPlay = m_psychadelic.StopEffect();
+        else if (drawStrip)
+            canPlay = m_butterflyStrip.StopEffect();
         else if (drawDolphin)
         {
             if (!m_dolphin.getStopMoving())
@@ -405,6 +451,7 @@ public class main : MonoBehaviour
             m_eyeButterflies.PlayEffect();
             drawLeopard = false;
             drawPsychadelic = false;
+            drawStrip = false;
             drawChameleon = false;
             drawDolphin = false;
             drawEyes = true;
@@ -425,6 +472,8 @@ public class main : MonoBehaviour
             canPlay = m_leopard.StopEffect();
         else if (drawPsychadelic)
             canPlay = m_psychadelic.StopEffect();
+        else if (drawStrip)
+            canPlay = m_butterflyStrip.StopEffect();
         else if (drawDolphin)
         {
             if (!m_dolphin.getStopMoving())
@@ -457,6 +506,7 @@ public class main : MonoBehaviour
                 m_butterflies.DecrBloom();
                 m_butterflies.DecrBloom();
             drawLeopard = false;
+            drawStrip = false;
             drawPsychadelic = false;
             drawChameleon = false;
             drawDolphin = false;

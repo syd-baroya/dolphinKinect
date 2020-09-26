@@ -170,7 +170,7 @@ public class TrackerHandler : MonoBehaviour
 
     public bool trackHandsUp(Body skeleton)
     {
-        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.Head].Y) ||
+        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.Head].Y) &&
                (skeleton.JointPositions3D[(int)JointId.HandLeft].Y < skeleton.JointPositions3D[(int)JointId.Head].Y);
     }
 

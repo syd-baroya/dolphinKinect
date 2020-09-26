@@ -252,7 +252,6 @@ public class ButterflyEyeBehavior : MonoBehaviour
                         movingTime[i] = Random.Range(1f, 5.5f);
                         t[i] = 0.0f;
                     }
-                    Debug.Log("done moving to middle");
                     moveToMiddleT = 0;
                     stopMoving = true;
                     movingDeltaTime = 0f;

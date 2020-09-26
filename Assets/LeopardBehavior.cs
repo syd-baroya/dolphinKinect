@@ -44,6 +44,7 @@ public class LeopardBehavior : MonoBehaviour
         }
         else
         {
+            Debug.Log("leopard stopped");
             m_object.SetActive(false);
             fade_t = 0f;
             return true;
