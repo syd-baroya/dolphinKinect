@@ -72,11 +72,14 @@ public class main : MonoBehaviour
                 if (m_lastFrameData.NumOfBodies != 0)
                 {
 
-                    waving = m_tracker.updateTracker(m_lastFrameData);
-                    if (effectTimer >= 5f)
+                    int new_wave = m_tracker.updateTracker(m_lastFrameData);
+
+                    if (new_wave != waving)
                     {
-                        if (waving > 0)
+
+                        if (effectTimer >= 5f && new_wave < 3 && new_wave > 0)
                         {
+                           
                             waveStarted = true;
 
                             if (waving == 1)
@@ -86,7 +89,7 @@ public class main : MonoBehaviour
                                 if (currSkinIndex < 0)
                                     currSkinIndex = maxSkinEffects - 1;
                             }
-                            else if (waving == 2)
+                            else 
                             {
                                 Debug.Log("waving right");
                                 currSkinIndex++;
@@ -94,14 +97,20 @@ public class main : MonoBehaviour
                                     currSkinIndex = 0;
                             }
 
-                            else
-                            {
-                                Debug.Log("arms up");
+                            effectTimer = 0f;
 
-                                currAnimIndex++;
-                                if (currAnimIndex >= maxAnimEffects)
-                                    currAnimIndex = 0;
-                            }
+                        }
+                        else if (new_wave == 3 && (effectTimer >= 10f || waving==0))
+                        {
+                            waveStarted = true;
+
+                            Debug.Log("arms up");
+
+                            currAnimIndex++;
+                            if (currAnimIndex >= maxAnimEffects)
+                                currAnimIndex = 0;
+
+                            effectTimer = 0f;
 
                         }
                         else
@@ -109,7 +118,8 @@ public class main : MonoBehaviour
                             waveStarted = false;
 
                         }
-                        effectTimer = 0f;
+                        waving = new_wave;
+
                     }
                 }
             }
@@ -358,13 +368,11 @@ public class main : MonoBehaviour
             canPlay = m_psychadelic.StopEffect();
         else if (drawDolphin)
         {
-            Debug.Log("hi");
             if (!m_dolphin.getStopMoving())
                 m_dolphin.StartingWave();
 
             else
             {
-                Debug.Log(m_dolphin.GetBloom());
                 if (m_dolphin.GetBloom() < 80)
                 {
                     m_dolphin.IncrBloom();

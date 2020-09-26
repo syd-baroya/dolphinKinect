@@ -15,7 +15,6 @@ public class ChameleonBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(fade_t);
     }
 
     public bool PlayEffect()

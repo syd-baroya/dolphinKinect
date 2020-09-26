@@ -164,20 +164,20 @@ public class TrackerHandler : MonoBehaviour
 
     public bool trackWavingLeft(Body skeleton)
     {
-        return (skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&
-               (skeleton.JointPositions3D[(int)JointId.HipRight].X < skeleton.JointPositions3D[(int)JointId.HandRight].X);
+        return /*(skeleton.JointPositions3D[(int)JointId.ElbowRight].Y < skeleton.JointPositions3D[(int)JointId.ShoulderRight].Y) &&*/
+               (skeleton.JointPositions3D[(int)JointId.ShoulderRight].X < skeleton.JointPositions3D[(int)JointId.HandRight].X);
     }
 
     public bool trackHandsUp(Body skeleton)
     {
-        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.Head].Y) &&
+        return (skeleton.JointPositions3D[(int)JointId.HandRight].Y < skeleton.JointPositions3D[(int)JointId.Head].Y) ||
                (skeleton.JointPositions3D[(int)JointId.HandLeft].Y < skeleton.JointPositions3D[(int)JointId.Head].Y);
     }
 
     public bool trackWavingRight(Body skeleton)
     {
-        return (skeleton.JointPositions3D[(int)JointId.ElbowLeft].Y < skeleton.JointPositions3D[(int)JointId.ShoulderLeft].Y) && 
-                (skeleton.JointPositions3D[(int)JointId.HipLeft].X > skeleton.JointPositions3D[(int)JointId.HandLeft].X);
+        return /*(skeleton.JointPositions3D[(int)JointId.ElbowLeft].Y < skeleton.JointPositions3D[(int)JointId.ShoulderLeft].Y) && */
+                (skeleton.JointPositions3D[(int)JointId.ShoulderLeft].X > skeleton.JointPositions3D[(int)JointId.HandLeft].X);
     }
 
     public void renderSkeleton(Body skeleton, int skeletonNumber)
