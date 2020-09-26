@@ -137,7 +137,7 @@ public class main : MonoBehaviour
                     if (m_dolphin.GetBloom() > 0)
                         m_dolphin.DecrBloom();
                     m_dolphin.swimAround();
-                    drawLeopard = true;
+                    drawLeopard = false;
                     drawPsychadelic = false;
                     drawChameleon = false;
                     drawDolphin = true;
@@ -358,11 +358,13 @@ public class main : MonoBehaviour
             canPlay = m_psychadelic.StopEffect();
         else if (drawDolphin)
         {
+            Debug.Log("hi");
             if (!m_dolphin.getStopMoving())
                 m_dolphin.StartingWave();
 
             else
             {
+                Debug.Log(m_dolphin.GetBloom());
                 if (m_dolphin.GetBloom() < 80)
                 {
                     m_dolphin.IncrBloom();
@@ -377,15 +379,7 @@ public class main : MonoBehaviour
         }
         else if (drawButterflies)
         {
-            if (m_butterflies.GetBloom() < 90)
-            {
-                m_butterflies.IncrBloom();
-            }
-            else
-            {
-                m_butterflies.SetActive(false);
-                canPlay = true;
-            }
+            canPlay = StopButterfliesEE();
         }
         if (canPlay || drawEyes)
         {
@@ -436,20 +430,15 @@ public class main : MonoBehaviour
         }
         else if (drawEyes)
         {
-            if (m_eyeButterflies.GetBloom() < 90)
-            {
-                m_eyeButterflies.IncrBloom();
-            }
-            else
-            {
-                m_eyeButterflies.SetActive(false);
-                canPlay = true;
-            }
+            canPlay = StopEyesEE();
+
+            
         }    
         if (canPlay || drawButterflies)
         {
             m_butterflies.SetActive(true);
             if (m_butterflies.GetBloom() > 0f)
+                m_butterflies.DecrBloom();
                 m_butterflies.DecrBloom();
             drawLeopard = false;
             drawPsychadelic = false;

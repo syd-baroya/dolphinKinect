@@ -10,7 +10,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     float[] speedToEye;
     float[] flappingSpeed;
     float movingDeltaTime = 0;
-   
+
     public float minX;
     public float maxX;
     public float minY;
@@ -29,6 +29,8 @@ public class ButterflyEyeBehavior : MonoBehaviour
     public GameObject[] m_allButterFlies;
     private Vector3[] oldPos;
     private Vector3[] targetPos;
+    private Vector3[] ogPos;
+    private float[] movingTime;
     private bool moveToMIddle = false;
 
     private void Awake()
@@ -41,14 +43,19 @@ public class ButterflyEyeBehavior : MonoBehaviour
         t = new float[m_allButterFlies.Length];
         speedToEye = new float[m_allButterFlies.Length];
         flappingSpeed = new float[m_allButterFlies.Length];
-        for (int i = 0; i < flyingT.Length; i++)
+        ogPos = new Vector3[m_allButterFlies.Length];
+        movingTime = new float[m_allButterFlies.Length];
+
+        for (int i = 0; i < m_allButterFlies.Length; i++)
         {
             flyingT[i] = 0.0f;
             rand_t[i] = 0.0f;
             t[i] = 0.0f;
             speedToEye[i] = Random.Range(0, 5);
             flappingSpeed[i] = m_allButterFlies[i].GetComponent<Renderer>().material.GetFloat("_Speed");
-
+            ogPos[i] = m_allButterFlies[i].transform.position;
+            movingTime[i] = Random.Range(10, 40)/10.0f;
+            //m_allButterFlies[i].transform.position = new Vector3(0.372f, 0, -0.234f);
         }
         oldPos = new Vector3[m_allButterFlies.Length];
         targetPos = new Vector3[m_allButterFlies.Length];
@@ -62,7 +69,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
     }
 
     public void StartEyeTransform()
@@ -104,14 +111,11 @@ public class ButterflyEyeBehavior : MonoBehaviour
         if (movingDeltaTime > 3f)
         {
             StartEyeTransform();
-            for (int i = 0; i < m_allButterFlies.Length; i++)
-            {
-                targetPos[i] = m_allButterFlies[i].transform.position;
-            }
+           
         }
         else
         {
-            movingDeltaTime += Time.deltaTime;
+            movingDeltaTime += Time.deltaTime*0.5f;
 
             for (int i = 0; i < m_allButterFlies.Length; i++)
             {
@@ -119,18 +123,38 @@ public class ButterflyEyeBehavior : MonoBehaviour
                 {
                     float randX = Random.Range(minX, maxX);
                     float randY = Random.Range(minY, maxY);
+                    Debug.Log(randX + ", " + randY);
                     rand_t[i] = Random.Range(0.005f, 0.02f);
-                    targetPos[i] = new Vector3(randX, randY, m_allButterFlies[i].transform.position.z);
+                    targetPos[i] = new Vector3(randX, randY, ogPos[i].z);
                     oldPos[i] = m_allButterFlies[i].transform.position;
                 }
                 Vector3 pos = Vector3.Lerp(oldPos[i], targetPos[i], flyingT[i]);
                 m_allButterFlies[i].transform.position = pos;
-                if(flyingT[i] < 1f)
+                if (flyingT[i] < 1f)
                     flyingT[i] += rand_t[i];
+                else if (movingTime[i] > 1)
+                {
+                    flyingT[i] = 0.0f;
+                    movingTime[i] -= 1f;
+
+                }
+                else
+                {
+                    flyingT[i] = 0.0f;
+                    goBackHome(i);
+                }
 
             }
         }
     }
+
+    private void goBackHome(int index)
+    {
+        flyingT[index] += Time.deltaTime;
+        Vector3 pos = Vector3.Lerp(targetPos[index], ogPos[index], flyingT[index]);
+        m_allButterFlies[index].transform.position = pos;
+    }
+
     public void SetActive(bool active)
     {
         m_butterfly.SetActive(active);

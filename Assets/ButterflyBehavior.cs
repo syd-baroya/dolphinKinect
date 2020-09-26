@@ -81,9 +81,9 @@ public class ButterflyBehavior : MonoBehaviour
                 {
                     randX = Random.Range(minX, maxX);
                     randY = Random.Range(minY, maxY);
-                    randZ = Random.Range(minZ, maxZ);
+                    //randZ = Random.Range(minZ, maxZ);
                     rand_t[i] = Random.Range(0.005f, 0.02f);
-                    targetPos[i] = new Vector3(randX, randY, randZ);
+                    targetPos[i] = new Vector3(randX, randY, m_allButterFlies[i].transform.position.z);
                     oldPos[i] = m_allButterFlies[i].transform.position;
                 }
                 else

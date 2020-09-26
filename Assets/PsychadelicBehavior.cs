@@ -16,7 +16,7 @@ public class PsychadelicBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_object.transform.Rotate(Vector3.forward, angle);
+        m_object.transform.Rotate(Vector3.forward, angle/5f);
     }
 
     public bool PlayEffect()
