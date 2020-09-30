@@ -71,9 +71,8 @@ public class main : MonoBehaviour
 
                     if (new_wave != waving)
                     {
-                        //if (waving == 0)
-                        //    effectTimer = 0;
-                        if (new_wave < 3 && ((effectTimer >= 5f && waving != 3) || (effectTimer >= 20f && waving == 3) || (waving == 0)))
+                        Debug.Log("New Wave: " + new_wave + ", " + "waving: " + waving + ", effect timer: " + effectTimer);
+                        if ((new_wave < 3 && new_wave!=0) && ((effectTimer >= 5f && waving != 3) || (effectTimer >= 25f && waving == 3) || (waving == 0)))
                         {
 
                             waveStarted = true;
@@ -97,7 +96,7 @@ public class main : MonoBehaviour
                             waving = new_wave;
 
                         }
-                        else if (new_wave == 3 && ((waving < 3 && effectTimer >= 5f) || (waving == 3 && effectTimer >= 20f) || (waving == 0)))
+                        else if (new_wave == 3 && ((waving < 3 && effectTimer >= 5f) || (waving == 3 && effectTimer >= 25f) || (waving == 0)))
                         {
                             waveStarted = true;
 
@@ -111,7 +110,7 @@ public class main : MonoBehaviour
                             waving = new_wave;
 
                         }
-                        else if (new_wave == 0 && ((waving == 3 && effectTimer >= 20f) || (waving < 3 && effectTimer >= 5f)))
+                        else if (new_wave == 0 && ((waving == 3 && effectTimer >= 25f) || (waving < 3 && effectTimer >= 5f)))
                         {
                             Debug.Log("arms down");
                             waveStarted = false;
@@ -150,9 +149,10 @@ public class main : MonoBehaviour
             if (canPlay || drawDolphin)
             {
                 canPlay = false;
-                if (drawPsychadelic || drawChameleon || drawLeopard || drawStrip)
+
+                if (drawPsychadelic || drawChameleon || drawLeopard)
                     canPlay = m_dolphin.StartFadeIn();
-                if (canPlay || drawButterflies || drawEyes || drawDolphin)
+                if (canPlay || drawButterflies || drawEyes || drawDolphin || drawStrip)
                 {
                     if (m_dolphin.GetBloom() > 0)
                         m_dolphin.DecrBloom();

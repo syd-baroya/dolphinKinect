@@ -22,11 +22,15 @@ public class ButterflyStrip : MonoBehaviour
         timeCounter = new float[maxButterflies];
         foreach (Transform child in transform)
         {
-            speeds[i] = Random.Range(0.5f, 0.9f);
-            timeCounter[i] = Random.Range(-2f, -5f); ;
-            radii[i] = Random.Range(0.4f, 0.6f);
+            
             ogPositions[i] = child.position;
             i++;
+        }
+        for(int j = 0; j < maxButterflies; j++)
+        {
+            speeds[j] = Random.Range(0.5f, 0.9f);
+            timeCounter[j] = Random.Range(-2f, -5f); ;
+            radii[j] = Random.Range(0.4f, 0.6f);
         }
     }
     // Update is called once per frame
@@ -44,6 +48,8 @@ public class ButterflyStrip : MonoBehaviour
         int i = 0;
         foreach (Transform child in transform)
         {
+            if (i >= maxButterflies)
+                break;
             timeCounter[i] += Time.deltaTime; // multiply all this with some speed variable (* speed);
 
             float y = Mathf.Cos(timeCounter[i] * speeds[i]);
@@ -65,6 +71,8 @@ public class ButterflyStrip : MonoBehaviour
         int counterDone = 0;
         foreach (Transform child in transform)
         {
+            if (i >= maxButterflies)
+                break;
             timeCounter[i] += Time.deltaTime; // multiply all this with some speed variable (* speed);
 
             float y = Mathf.Cos(timeCounter[i] * speeds[i]);

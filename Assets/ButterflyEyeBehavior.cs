@@ -54,8 +54,8 @@ public class ButterflyEyeBehavior : MonoBehaviour
             flyingT[i] = 0.0f;
             rand_t[i] = 0.0f;
             t[i] = 0.0f;
-            speedToEye[i] = Random.Range(0, 5);
-            speedFromEye[i] = speedToEye[i];
+            speedToEye[i] = Random.Range(0, 10);
+            speedFromEye[i] = Random.Range(0, 5); ;
             flappingSpeed[i] = m_allButterFlies[i].GetComponent<Renderer>().material.GetFloat("_Speed");
             backHomeT[i] = 0f;
             ogPos[i] = m_allButterFlies[i].transform.position;
@@ -174,7 +174,7 @@ public class ButterflyEyeBehavior : MonoBehaviour
     private void goBackHome(int index)
     {
 
-        backHomeT[index] += Time.deltaTime;
+        backHomeT[index] += Time.deltaTime * 0.5f;
 
         Vector3 pos = Vector3.Lerp(targetPos[index], ogPos[index], backHomeT[index]);
         m_allButterFlies[index].transform.position = pos;
@@ -245,8 +245,8 @@ public class ButterflyEyeBehavior : MonoBehaviour
                 {
                     for (int i = 0; i < m_allButterFlies.Length; i++)
                     {
-                        speedToEye[i] = Random.Range(0, 5);
-                        speedFromEye[i] = speedToEye[i];
+                        speedToEye[i] = Random.Range(0, 10);
+                        speedFromEye[i] = Random.Range(0, 5);
                         backHomeT[i] = 0f;
                         flyingT[i] = 0f;
                         movingTime[i] = Random.Range(1f, 5.5f);
